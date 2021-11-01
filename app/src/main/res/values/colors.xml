@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Color Pallete 1 : https://colorhunt.co/palette/f8f1f111698e19456b16c79a -->
+    <color name="gray">#F8F1F1</color>
+    <color name="blue">#11698E</color>
+    <color name="dark_blue">#19456B</color>
+    <color name="aquamarine">#16C79A</color>
 </resources>
