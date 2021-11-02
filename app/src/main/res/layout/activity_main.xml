@@ -4,10 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#19456B"
-    tools:ignore="HardCodedText"
-    android:alpha="0.9"
-    tools:context=".MainActivity">
+    android:background="@color/dark_blue"
+    tools:context=".MainActivity"
+    tools:ignore="HardCodedText">
+
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2"
+        android:scaleType="fitXY"
+        android:src="@drawable/bg_main" />
 
     <ImageView
         android:id="@+id/logo"
