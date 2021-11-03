@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:weightSum="2"
-    tools:ignore="HardCodedText"
+    tools:ignore="HardCodedText,ContentDescription"
     tools:context=".Login">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -114,15 +114,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
+                android:labelFor="@+id/inputEmail"
                 android:text="@string/email" />
 
             <EditText
+                android:id="@+id/inputEmail"
                 style="@style/editTextInputLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.5"
-                android:background="@drawable/rounded_color_edit_text"
-                />
+                android:autofillHints="emailAddress"
+                android:inputType="textEmailAddress" />
 
         </LinearLayout>
 
@@ -141,14 +142,16 @@
                 style="@style/textLoginDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:labelFor="@+id/inputPassword"
                 android:text="@string/password" />
 
             <EditText
+                android:id="@+id/inputPassword"
                 style="@style/editTextInputLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.5"
-                android:background="@drawable/rounded_color_edit_text" />
+                android:importantForAutofill="no"
+                android:inputType="textWebPassword" />
 
         </LinearLayout>
 
@@ -156,14 +159,8 @@
             android:id="@+id/btnLogin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:backgroundTint="@color/aquamarine"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
+            style="@style/buttonForLoginRegister"
             android:text="@string/log_in"
-            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/LinearLayoutPassword"
             app:layout_constraintHorizontal_bias="0.51"

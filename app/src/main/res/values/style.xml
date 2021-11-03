@@ -17,5 +17,15 @@
     <style name="editTextInputLogin">
         <item name="android:minHeight">48dp</item>
         <item name="android:ems">@integer/material_motion_duration_long_1</item>
+        <item name="android:background">@drawable/rounded_corner_edit_text</item>
+        <item name="android:alpha">0.5</item>
+    </style>
+    <style name="buttonForLoginRegister">
+        <item name="android:layout_marginStart">30dp</item>
+        <item name="android:layout_marginEnd">30dp</item>
+        <item name="android:backgroundTint">@color/aquamarine</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 </resources>
