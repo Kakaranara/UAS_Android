@@ -10,4 +10,12 @@
         <item name="android:textSize">25sp</item>
         <item name="android:padding">15dp</item>
     </style>
+    <style name="textLoginDesc">
+        <item name="android:textSize">25sp</item>
+        <item name="android:layout_marginStart">8sp</item>
+    </style>
+    <style name="editTextInputLogin">
+        <item name="android:minHeight">48dp</item>
+        <item name="android:ems">@integer/material_motion_duration_long_1</item>
+    </style>
 </resources>
