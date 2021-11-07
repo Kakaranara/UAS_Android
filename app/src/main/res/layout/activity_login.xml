@@ -16,7 +16,7 @@
         android:layout_weight="1">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/background_login"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.8"
@@ -123,7 +123,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:autofillHints="emailAddress"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                tools:ignore="DuplicateSpeakableTextCheck" />
 
         </LinearLayout>
 
@@ -151,22 +152,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
-                android:inputType="textWebPassword" />
+                android:inputType="textWebPassword"
+                tools:ignore="DuplicateSpeakableTextCheck,DuplicateSpeakableTextCheck" />
 
         </LinearLayout>
 
         <Button
             android:id="@+id/btnLogin"
+            style="@style/buttonForLoginRegister"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/buttonForLoginRegister"
             android:text="@string/log_in"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/LinearLayoutPassword"
             app:layout_constraintHorizontal_bias="0.51"
             app:layout_constraintStart_toStartOf="@id/LinearLayoutPassword"
             app:layout_constraintTop_toBottomOf="@+id/LinearLayoutPassword"
-            app:layout_constraintVertical_bias="0.13999999" />
+            app:layout_constraintVertical_bias="0.13999999"
+            tools:ignore="TextContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
