@@ -8,11 +8,15 @@
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/drawable/rounded_color_edit_text.xml" value="0.14375" />
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/drawable/rounded_corner_button.xml" value="0.14375" />
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/drawable/rounded_corner_edit_text.xml" value="0.14375" />
-        <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/layout/activity_admin.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/drawable/rounded_corner_navbar.xml" value="0.14375" />
+        <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/layout/activity_admin.xml" value="0.12" />
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/layout/activity_pelayan.xml" value="0.22" />
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/layout/activity_register.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/layout/fragment_admin_barang.xml" value="0.131640625" />
+        <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/layout/fragment_admin_home.xml" value="0.131640625" />
+        <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/layout/fragment_admin_pesanan.xml" value="0.1" />
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/menu/menu_admin.xml" value="0.4466666666666667" />
         <entry key="..\:/Users/wahyu/Desktop/test/app/src/main/res/layout/activity_main.xml" value="0.4466666666666667" />
       </map>
