@@ -7,11 +7,15 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:hardwareAccelerated="false"
         android:supportsRtl="true"
         android:theme="@style/Theme.UasMobileApp">
         <activity
             android:name=".UserMainMenu"
             android:exported="true" />
+        <activity
+            android:name=".AdminActivity"
+            android:exported="false" />
         <activity
             android:name=".Register"
             android:exported="false" />

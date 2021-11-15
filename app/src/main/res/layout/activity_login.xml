@@ -163,11 +163,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/log_in"
+            android:onClick="loginUser"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/LinearLayoutPassword"
+            app:layout_constraintHorizontal_bias="0.51"
             app:layout_constraintStart_toStartOf="@id/LinearLayoutPassword"
             app:layout_constraintTop_toBottomOf="@+id/LinearLayoutPassword"
-            app:layout_constraintVertical_bias="0.139"
+            app:layout_constraintVertical_bias="0.13999999"
             tools:ignore="TextContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

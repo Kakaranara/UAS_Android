@@ -20,6 +20,8 @@ public class UserProductFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ProductsListAdapter mAdapter;
 
+
+    // TODO Implements Products List RecyclerView inside this Fragment
 //    @Override
 //    public View onCreateView(@NonNull LayoutInflater inflater,
 //                             @Nullable ViewGroup container,
