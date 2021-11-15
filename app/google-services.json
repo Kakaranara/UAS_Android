@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1077087328287",
+    "project_id": "final-project-mobile-app-98d46",
+    "storage_bucket": "final-project-mobile-app-98d46.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077087328287:android:54c800c2c6d7c36044dd2a",
+        "android_client_info": {
+          "package_name": "umn.ac.id.uasmobileapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1077087328287-9dlrp3ec4ucuir2cmq198rfk9b1hg3ok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZkduiEafsE5HnTcjvWn5BI8a9wA1NFaI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1077087328287-9dlrp3ec4ucuir2cmq198rfk9b1hg3ok.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
