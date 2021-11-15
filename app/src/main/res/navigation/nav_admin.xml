@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_admin"
+    app:startDestination="@id/adminHomeFragment">
+    <fragment
+        android:id="@+id/adminHomeFragment"
+        android:name="umn.ac.id.uasmobileapp.AdminHomeFragment"
+        android:label="fragment_admin_home"
+        tools:layout="@layout/fragment_admin_home" >
+        <action
+            android:id="@+id/action_adminHomeFragment_to_adminBarangFragment"
+            app:destination="@id/adminBarangFragment" />
+        <action
+            android:id="@+id/action_adminHomeFragment_to_adminPesananFragment"
+            app:destination="@id/adminPesananFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminBarangFragment"
+        android:name="umn.ac.id.uasmobileapp.AdminBarangFragment"
+        android:label="fragment_admin_barang"
+        tools:layout="@layout/fragment_admin_barang" >
+        <action
+            android:id="@+id/action_adminBarangFragment_to_adminHomeFragment"
+            app:destination="@id/adminHomeFragment" />
+        <action
+            android:id="@+id/action_adminBarangFragment_to_adminPesananFragment"
+            app:destination="@id/adminPesananFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminPesananFragment"
+        android:name="umn.ac.id.uasmobileapp.AdminPesananFragment"
+        android:label="fragment_admin_pesanan"
+        tools:layout="@layout/fragment_admin_pesanan" >
+        <action
+            android:id="@+id/action_adminPesananFragment_to_adminBarangFragment"
+            app:destination="@id/adminBarangFragment" />
+        <action
+            android:id="@+id/action_adminPesananFragment_to_adminHomeFragment"
+            app:destination="@id/adminHomeFragment" />
+    </fragment>
+</navigation>
