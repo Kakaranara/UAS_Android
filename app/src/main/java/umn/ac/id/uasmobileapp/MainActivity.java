@@ -10,7 +10,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnLoginPage, btnRegisterPage;
+    private Button loginPageBtn, btnRegisterPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,19 +18,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); //no dark mode
 
-        //Find ID
-        btnLoginPage = findViewById(R.id.btnLoginPage);
-        btnRegisterPage = findViewById(R.id.btnRegisterPage);
+        // TEST PURPOSE: Habis run langsung masuk ke User Main Menu
+        startActivity(new Intent(MainActivity.this, UserMainMenu.class));
 
-        //Handling OnClick
-        btnLoginPage.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this,Login.class);
-            startActivity(intent);
-        });
-
-        btnRegisterPage.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, Register.class);
-            startActivity(intent);
-        });
+//        //Find ID
+//        loginPageBtn = findViewById(R.id.btnLoginPage);
+//        btnRegisterPage = findViewById(R.id.btnRegisterPage);
+//
+//        //Handling OnClick
+//        loginPageBtn.setOnClickListener(view -> {
+//            Intent intent = new Intent(MainActivity.this, Login.class);
+//            startActivity(intent);
+//        });
+//
+//        btnRegisterPage.setOnClickListener(view -> {
+//            Intent intent = new Intent(MainActivity.this, Register.class);
+//            startActivity(intent);
+//        });
     }
 }
