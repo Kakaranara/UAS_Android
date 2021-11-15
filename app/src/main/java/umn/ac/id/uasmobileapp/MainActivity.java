@@ -18,6 +18,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); //no dark mode
 
+        // TEST PURPOSE: Habis run langsung masuk ke User Main Menu
+        //startActivity(new Intent(MainActivity.this, UserMainMenu.class));
+
         //Find ID
         btnLoginPage = findViewById(R.id.btnLoginPage);
         btnRegisterPage = findViewById(R.id.btnRegisterPage);
