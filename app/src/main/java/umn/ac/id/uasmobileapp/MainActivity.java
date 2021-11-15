@@ -16,24 +16,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); //no dark mode
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); //no dark mode
 
-        // TEST PURPOSE: Habis run langsung masuk ke User Main Menu
-        startActivity(new Intent(MainActivity.this, UserMainMenu.class));
+//        TEST PURPOSE: Habis run langsung masuk ke User Main Menu
+//        startActivity(new Intent(MainActivity.this, UserMainMenu.class));
 
-//        //Find ID
-//        loginPageBtn = findViewById(R.id.btnLoginPage);
-//        btnRegisterPage = findViewById(R.id.btnRegisterPage);
-//
-//        //Handling OnClick
-//        loginPageBtn.setOnClickListener(view -> {
-//            Intent intent = new Intent(MainActivity.this, Login.class);
-//            startActivity(intent);
-//        });
-//
-//        btnRegisterPage.setOnClickListener(view -> {
-//            Intent intent = new Intent(MainActivity.this, Register.class);
-//            startActivity(intent);
-//        });
+//      //Find ID
+        loginPageBtn = findViewById(R.id.btnLoginPage);
+        btnRegisterPage = findViewById(R.id.btnRegisterPage);
+
+        //Handling OnClick
+        loginPageBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, Login.class);
+            startActivity(intent);
+        });
+
+        btnRegisterPage.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, Register.class);
+            startActivity(intent);
+        });
     }
 }
