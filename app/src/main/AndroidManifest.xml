@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UasMobileApp">
         <activity
+            android:name=".UserMainMenu"
+            android:exported="true" />
+        <activity
             android:name=".AdminActivity"
             android:exported="false" />
         <activity
