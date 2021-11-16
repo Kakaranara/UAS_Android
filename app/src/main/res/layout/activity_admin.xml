@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:ignore="HardCodedText"
     tools:context=".AdminActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,23 +49,29 @@
                 android:id="@+id/btnHome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/button3Navbar"
                 android:text="Home" />
 
             <Button
                 android:id="@+id/btnPesanan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/button3Navbar"
                 android:text="PESANAn" />
 
-            <Button
+            <ImageButton
+                android:src="@drawable/ic_baseline_clean_hands_48"
                 android:id="@+id/btnBarang"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/button3Navbar"
                 android:text="Barang" />
         </LinearLayout>
 
 
-        <Button
+        <ImageButton
+            android:id="@+id/btnSettingAdmin"
+            android:src="@drawable/ic_baseline_settings_48"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="setting"
@@ -72,6 +79,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/LinearLayoutMenuAdmin" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_login_48"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnSettingAdmin" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

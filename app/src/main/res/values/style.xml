@@ -31,6 +31,10 @@
         <item name="android:textSize">25sp</item>
         <item name="android:padding">15dp</item>
     </style>
+    <style name="button3Navbar">
+        <item name="android:layout_marginBottom">15dp</item>
+        <item name="android:layout_marginTop">15dp</item>
+    </style>
     <style name="buttonTransparent">
         <item name="android:background">@drawable/rounded_corner_transparent</item>
         <item name="android:textColor">@color/dark_blue</item>
