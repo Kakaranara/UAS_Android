@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
 //        TEST PURPOSE: Habis run langsung masuk ke User Main Menu
 //        startActivity(new Intent(MainActivity.this, UserMainMenu.class));
 
+        //TEST PURPOSE : AdminActivity
+        startActivity(new Intent(this, AdminActivity.class));
+
 //      //Find ID
         loginPageBtn = findViewById(R.id.btnLoginPage);
         btnRegisterPage = findViewById(R.id.btnRegisterPage);

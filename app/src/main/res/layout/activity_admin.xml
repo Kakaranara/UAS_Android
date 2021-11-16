@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="HardCodedText"
+    android:id="@+id/fragmentContainer"
     tools:context=".AdminActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,8 +61,8 @@
                 android:text="PESANAn" />
 
             <ImageButton
-                android:src="@drawable/ic_baseline_clean_hands_48"
                 android:id="@+id/btnBarang"
+                android:src="@drawable/ic_baseline_clean_hands_48"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/button3Navbar"
@@ -81,6 +82,7 @@
             app:layout_constraintTop_toBottomOf="@+id/LinearLayoutMenuAdmin" />
 
         <ImageButton
+            android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_login_48"
@@ -105,8 +107,8 @@
         app:layout_constraintVertical_bias="0.00999999"
         app:layout_constraintWidth="400dp" />
 
-    <fragment
-        android:id="@+id/adminContentFragment"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/adminContainerFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="40dp"
@@ -118,7 +120,6 @@
         app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toEndOf="@+id/navbar"
         app:layout_constraintTop_toBottomOf="@+id/logoAdmin"
-        app:layout_constraintVertical_bias="0.619"
-        app:navGraph="@navigation/nav_admin" />
+        app:layout_constraintVertical_bias="0.619" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
