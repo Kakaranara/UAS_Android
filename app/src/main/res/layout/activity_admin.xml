@@ -91,14 +91,18 @@
 
     <fragment
         android:id="@+id/adminContentFragment"
-        android:layout_width="900dp"
-        android:layout_height="700dp"
-        app:navGraph="@navigation/nav_admin"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toEndOf="@+id/navbar"
         app:layout_constraintTop_toBottomOf="@+id/logoAdmin"
-        app:layout_constraintVertical_bias="0.31" />
+        app:layout_constraintVertical_bias="0.619"
+        app:navGraph="@navigation/nav_admin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
