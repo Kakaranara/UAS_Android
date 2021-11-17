@@ -46,15 +46,17 @@
             app:layout_constraintVertical_bias="0.07999998">
 
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnHome"
+                android:src="@drawable/ic_baseline_home_work_48"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/button3Navbar"
                 android:text="Home" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnPesanan"
+                android:src="@drawable/ic_baseline_email_48"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/button3Navbar"

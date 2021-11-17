@@ -13,8 +13,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 public class AdminActivity extends AppCompatActivity {
-    ImageButton btnBarangAdmin;
-    Button btnHome, btnPesananAdmin;
+    ImageButton btnBarangAdmin,btnHome,btnPesananAdmin;
 //    Constraints navbar;
 
     @Override
@@ -27,6 +26,7 @@ public class AdminActivity extends AppCompatActivity {
         btnBarangAdmin = findViewById(R.id.btnBarang);
         btnBarangAdmin = findViewById(R.id.btnBarang);
 //        navbar = findViewById(R.id.navbar);
+
 
         btnHome.setOnClickListener(view ->{
             Fragment AdminHomeFragment = new AdminHomeFragment();
