@@ -21,6 +21,12 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
+        if(savedInstanceState == null){
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.adminContainerFragment, new AdminHomeFragment()).commit();
+        }
+
         btnHome = findViewById(R.id.btnHome);
         btnPesananAdmin = findViewById(R.id.btnPesanan);
         btnBarangAdmin = findViewById(R.id.btnBarang);
