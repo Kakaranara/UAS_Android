@@ -25,6 +25,7 @@
             android:id="@+id/homePajangan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/navbar_normal_state"
             android:src="@drawable/ic_baseline_home_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,13 +46,13 @@
             app:layout_constraintTop_toBottomOf="@+id/homePajangan"
             app:layout_constraintVertical_bias="0.07999998">
 
-
             <ImageButton
                 android:id="@+id/btnHome"
                 android:src="@drawable/ic_baseline_home_work_48"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/button3Navbar"
+                android:background="@drawable/navbar_selected"
                 android:text="Home" />
 
             <ImageButton
@@ -60,6 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/button3Navbar"
+                android:background="@drawable/navbar_selected"
                 android:text="PESANAn" />
 
             <ImageButton
@@ -68,6 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/button3Navbar"
+                android:background="@drawable/navbar_selected"
                 android:text="Barang" />
         </LinearLayout>
 
@@ -77,6 +80,7 @@
             android:src="@drawable/ic_baseline_settings_48"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/navbar_selected"
             android:text="setting"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -87,6 +91,7 @@
             android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/navbar_normal_state"
             android:src="@drawable/ic_baseline_login_48"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -33,13 +35,15 @@ public class AdminActivity extends AppCompatActivity {
         btnBarangAdmin = findViewById(R.id.btnBarang);
 //        navbar = findViewById(R.id.navbar);
 
-
         btnHome.setOnClickListener(view ->{
             Fragment AdminHomeFragment = new AdminHomeFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
             transaction.replace(R.id.adminContainerFragment, AdminHomeFragment,null);
             transaction.commit();
+            btnPesananAdmin.setSelected(false);
+            btnBarangAdmin.setSelected(false);
+            btnHome.setSelected(true);
         });
 
         btnPesananAdmin.setOnClickListener(view -> {
@@ -48,12 +52,18 @@ public class AdminActivity extends AppCompatActivity {
 
             transaction.replace(R.id.adminContainerFragment, AdminPesananFragment, null);
             transaction.commit();
+            btnHome.setSelected(false);
+            btnBarangAdmin.setSelected(false);
+            btnPesananAdmin.setSelected(true);
         });
 
         btnBarangAdmin.setOnClickListener(view->{
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.adminContainerFragment, new AdminBarangFragment(),null);
             transaction.commit();
+            btnHome.setSelected(false);
+            btnBarangAdmin.setSelected(true);
+            btnPesananAdmin.setSelected(false);
         });
 
 
