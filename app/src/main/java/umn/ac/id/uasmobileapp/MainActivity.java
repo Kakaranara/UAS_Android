@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 //        startActivity(new Intent(MainActivity.this, UserMainMenu.class));
 
         //TEST PURPOSE : AdminActivity
-        startActivity(new Intent(this, AdminActivity.class));
+//        startActivity(new Intent(this, AdminActivity.class));
 
 //      //Find ID
         loginPageBtn = findViewById(R.id.btnLoginPage);

@@ -39,14 +39,15 @@ public class Register extends AppCompatActivity {
 
                 //Get user input values
                 String bName = inputBName.getText().toString();
-                String email = inputEmail.getText().toString();
+                String email = inputEmail.getText().toString().replace(".",",");
                 String password = inputPassword.getText().toString();
                 String passwordVal = inputRePassword.getText().toString();
 
                 if(validate(password, passwordVal)) {
                     UserHelperClass helperClass = new UserHelperClass(bName, email, password);
 
-                    String userID = "U" + UUID.randomUUID().toString();
+//                    String userID = "U" + UUID.randomUUID().toString();
+                    String userID = "U" +  email;
 
                     reference.child(userID).setValue(helperClass);
                 } else{

@@ -1,19 +1,18 @@
 package umn.ac.id.uasmobileapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity {
@@ -68,19 +67,23 @@ public class Login extends AppCompatActivity {
     }
 
     private void isUser() {
-        String userEnteredEmail = inputEmail.getText().toString();
+        String userEnteredEmail = inputEmail.getText().toString().replace(".",",");
         String userEnteredPassword = inputPassword.getText().toString();
 
         DatabaseReference reference = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference("users");
-        Query checkUser = reference.orderByChild("email").equalTo(userEnteredEmail);
+//        String checkUser = reference.child("").equalTo(userEnteredEmail);
 
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+
+//        System.out.println(checkUser);
+
+        reference.child("U" + userEnteredEmail).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     inputEmail.setError(null);
-                    String passwordFromDB = dataSnapshot.child(userEnteredEmail).child("password").getValue(String.class);
+                    String passwordFromDB = dataSnapshot.child("password").getValue(String.class);
                     if(passwordFromDB.equals(userEnteredPassword)){
+                        System.out.println("sini1");
                         inputPassword.setError(null);
                         Toast.makeText(Login.this,"Login Success",Toast.LENGTH_SHORT).show();
                     } else{
