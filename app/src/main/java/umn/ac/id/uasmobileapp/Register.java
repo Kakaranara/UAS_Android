@@ -47,9 +47,9 @@ public class Register extends AppCompatActivity {
                     UserHelperClass helperClass = new UserHelperClass(bName, email, password);
 
 //                    String userID = "U" + UUID.randomUUID().toString();
-                    String userID = "U" +  email;
+//                    String userID = email;
 
-                    reference.child(userID).setValue(helperClass);
+                    reference.child(email).setValue(helperClass);
                     Toast.makeText(Register.this, "Succesfully Registered", Toast.LENGTH_SHORT).show();
                 } else{
                     Toast.makeText(Register.this,"Password Not matching",Toast.LENGTH_SHORT).show();

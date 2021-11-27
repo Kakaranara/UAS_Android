@@ -2,7 +2,6 @@ package umn.ac.id.uasmobileapp;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,14 +14,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Login extends AppCompatActivity {
     EditText inputEmail, inputPassword;
-    Button btnLogin;
+    public static boolean loginUser = false;
+    public static boolean loginAdmin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +88,6 @@ public class Login extends AppCompatActivity {
         Toast.makeText(Login.this,"Login User Enter",Toast.LENGTH_SHORT).show();
         if(!validateEmail() | !validatePassword()){
             Toast.makeText(Login.this,"Not Valid",Toast.LENGTH_SHORT).show();
-            return;
         } else{
             Toast.makeText(Login.this,"Valid",Toast.LENGTH_SHORT).show();
             isUser();
@@ -99,20 +96,24 @@ public class Login extends AppCompatActivity {
 
     private void isUser() {
         String userEnteredEmail = inputEmail.getText().toString().replace(".",",");
-        String userEnteredPassword = md5("U" + inputPassword.getText().toString());
+        String userEnteredPassword = inputPassword.getText().toString();
         DatabaseReference reference = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference("users");
 
-        reference.child("U" + userEnteredEmail).addValueEventListener(new ValueEventListener() {
+        reference.child(userEnteredEmail).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     inputEmail.setError(null);
                     String passwordFromDB = dataSnapshot.child("password").getValue(String.class);
-                    if(passwordFromDB.equals(userEnteredPassword)){
-                        System.out.println("sini1");
+                    if(passwordFromDB.equals(md5("U" + userEnteredPassword))){
                         inputPassword.setError(null);
-                        Toast.makeText(Login.this,"Login Success",Toast.LENGTH_SHORT).show();
-                    } else{
+                        loginUser = true;
+                        Toast.makeText(Login.this,"User Login Success",Toast.LENGTH_SHORT).show();
+                    } else if(passwordFromDB.equals(md5("A" + userEnteredPassword))){
+                        loginAdmin = true;
+                        Toast.makeText(Login.this, "Admin Login Succes", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
                         Toast.makeText(Login.this,"Wrong Password",Toast.LENGTH_SHORT).show();
                         //inputPassword.setError("Wrong Password");
                     }
