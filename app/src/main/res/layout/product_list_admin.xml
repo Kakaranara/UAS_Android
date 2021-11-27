@@ -16,7 +16,7 @@
             android:layout_height="320dp"
             android:background="@drawable/bg_product">
             <Button
-                android:id="@+id/delete_producr"
+                android:id="@+id/delete_product"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/delete_product"
