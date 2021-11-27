@@ -118,6 +118,7 @@
         app:layout_constraintWidth="400dp" />
 
     <androidx.fragment.app.FragmentContainerView
+
         android:id="@+id/adminContainerFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
