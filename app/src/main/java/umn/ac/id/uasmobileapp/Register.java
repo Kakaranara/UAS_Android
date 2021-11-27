@@ -40,8 +40,8 @@ public class Register extends AppCompatActivity {
                 //Get user input values
                 String bName = inputBName.getText().toString();
                 String email = inputEmail.getText().toString().replace(".",",");
-                String password = inputPassword.getText().toString();
-                String passwordVal = inputRePassword.getText().toString();
+                String password = Login.md5("U" + inputPassword.getText().toString());
+                String passwordVal = Login.md5("U" + inputRePassword.getText().toString());
 
                 if(validate(password, passwordVal)) {
                     UserHelperClass helperClass = new UserHelperClass(bName, email, password);
@@ -50,6 +50,7 @@ public class Register extends AppCompatActivity {
                     String userID = "U" +  email;
 
                     reference.child(userID).setValue(helperClass);
+                    Toast.makeText(Register.this, "Succesfully Registered", Toast.LENGTH_SHORT).show();
                 } else{
                     Toast.makeText(Register.this,"Password Not matching",Toast.LENGTH_SHORT).show();
                 }

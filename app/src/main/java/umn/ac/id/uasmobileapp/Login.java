@@ -15,6 +15,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class Login extends AppCompatActivity {
     EditText inputEmail, inputPassword;
     Button btnLogin;
@@ -26,6 +31,32 @@ public class Login extends AppCompatActivity {
 
         inputEmail = findViewById(R.id.inputEmail);
         inputPassword = findViewById(R.id.inputPassword);
+
+    }
+
+    public static String md5(final String s) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     private Boolean validateEmail() {
@@ -68,13 +99,8 @@ public class Login extends AppCompatActivity {
 
     private void isUser() {
         String userEnteredEmail = inputEmail.getText().toString().replace(".",",");
-        String userEnteredPassword = inputPassword.getText().toString();
-
+        String userEnteredPassword = md5("U" + inputPassword.getText().toString());
         DatabaseReference reference = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference("users");
-//        String checkUser = reference.child("").equalTo(userEnteredEmail);
-
-
-//        System.out.println(checkUser);
 
         reference.child("U" + userEnteredEmail).addValueEventListener(new ValueEventListener() {
             @Override
