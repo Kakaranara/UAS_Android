@@ -1,5 +1,6 @@
 package umn.ac.id.uasmobileapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -112,6 +113,9 @@ public class Login extends AppCompatActivity {
                     } else if(passwordFromDB.equals(md5("A" + userEnteredPassword))){
                         loginAdmin = true;
                         Toast.makeText(Login.this, "Admin Login Succes", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Login.this, AdminActivity.class);
+                        intent.putExtra("businessName", dataSnapshot.child("bName").getValue(String.class));
+                        startActivity(intent);
                     }
                     else{
                         Toast.makeText(Login.this,"Wrong Password",Toast.LENGTH_SHORT).show();

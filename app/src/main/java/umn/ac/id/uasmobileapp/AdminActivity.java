@@ -13,15 +13,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class AdminActivity extends AppCompatActivity {
     ImageButton btnBarangAdmin,btnHome,btnPesananAdmin;
+    TextView tVnamaBisnisAdmin;
 //    Constraints navbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
+        tVnamaBisnisAdmin = findViewById(R.id.namaBisnisAdmin);
+
+        Bundle extras = getIntent().getExtras();
+        String bName = extras.getString("businessName");
+        tVnamaBisnisAdmin.setText(bName);
 
         if(savedInstanceState == null){
             getSupportFragmentManager()

@@ -26,7 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_corner_home_nav"
-            android:src="@drawable/ic_baseline_home_96"
+            android:src="@drawable/green_store"
+            android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.7"
@@ -48,7 +49,7 @@
 
             <ImageButton
                 android:id="@+id/btnHome"
-                android:src="@drawable/ic_baseline_home_work_48"
+                android:src="@drawable/white_home"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/button3Navbar"
@@ -92,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/navbar_normal_state"
-            android:src="@drawable/ic_baseline_login_48"
+            android:src="@drawable/white_logout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -128,5 +129,20 @@
         app:layout_constraintStart_toEndOf="@+id/navbar"
         app:layout_constraintTop_toBottomOf="@+id/logoAdmin"
         app:layout_constraintVertical_bias="0.619" />
+
+    <TextView
+        android:id="@+id/namaBisnisAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:text="'Nama Bisnis' "
+        android:textColor="@color/dark_blue"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toTopOf="@+id/adminContainerFragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.73"
+        app:layout_constraintStart_toEndOf="@+id/logoAdmin"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.42000002" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
