@@ -14,25 +14,24 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/product_card_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="175dp"
             android:background="@drawable/products_list_card"
             android:padding="12dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/product_card_info_layout"
-                android:layout_width="0dp"
-                app:layout_constraintWidth_percent="0.6"
+                android:layout_width="175dp"
+                android:layout_height="match_parent"
                 android:layout_marginRight="5dp"
-                android:layout_height="0dp"
-                app:layout_constraintHeight_percent="1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/product_image"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.6">
 
                 <TextView
                     android:id="@+id/product_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Tom Yum Seafood"
                     android:textAlignment="center"
@@ -49,14 +48,14 @@
                     android:layout_height="wrap_content"
                     android:text="Rp 20.000"
                     android:textColor="@color/white"
-                    app:layout_constraintBottom_toTopOf="@id/product_quantity"
+                    app:layout_constraintBottom_toTopOf="@id/product_stock"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/product_name" />
 
                 <TextView
-                    android:id="@+id/product_quantity"
-                    android:layout_width="43dp"
+                    android:id="@+id/product_stock"
+                    android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:text="Sisa: 18"
                     android:textColor="@color/dark_blue"
@@ -67,20 +66,20 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/btnLayout"
-                    android:layout_width="fill_parent"
-                    android:layout_height="0dp"
-                    android:paddingHorizontal="10dp"
+                    android:layout_width="0dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHeight_percent="0.35"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/product_quantity">
+                    app:layout_constraintTop_toBottomOf="@id/product_stock">
 
                     <Button
                         android:id="@+id/cartBtn"
                         style="@style/buttonTransparent"
                         android:layout_width="50dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="35dp"
                         android:text="C"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/infoBtn"
@@ -91,7 +90,7 @@
                     <Button
                         android:id="@+id/infoBtn"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="35dp"
                         android:background="@drawable/rounded_corner_transparent"
                         android:text="INFO"
                         android:textColor="@color/dark_blue"
@@ -105,8 +104,8 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/product_image"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:src="@mipmap/ic_launcher"
 
                 app:layout_constraintBottom_toBottomOf="parent"

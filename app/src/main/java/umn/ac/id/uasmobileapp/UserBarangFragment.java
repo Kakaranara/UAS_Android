@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,8 +61,7 @@ public class UserBarangFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.productsRecyclerView);
 
         // To display the Recycler view with two columns
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 3);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity().getApplicationContext(), 2));
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 2);
 
         // Add spacing between columns
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 20, false));
@@ -86,7 +86,7 @@ public class UserBarangFragment extends Fragment {
                 = new FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull UserBarangFragment.UserProductViewholder holder, int position, @NonNull Product model) {
-                final String product_name = getRef(position).getKey();
+                final String product_key = getRef(position).getKey();
 
                 // Get price value
                 DatabaseReference getName = getRef(position).child("product_name").getRef();
@@ -95,7 +95,7 @@ public class UserBarangFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
                             String name = dataSnapshot.getValue().toString();
-                            holder.product_price.setText(name);
+                            holder.product_name.setText(name);
                         }
                     }
                     @Override
@@ -117,13 +117,13 @@ public class UserBarangFragment extends Fragment {
                 });
 
                 // Get quantity/stock value
-                DatabaseReference getQuantity = getRef(position).child("stock").getRef();
-                getQuantity.addValueEventListener(new ValueEventListener() {
+                DatabaseReference getStock = getRef(position).child("stock").getRef();
+                getStock.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
                             String stock = dataSnapshot.getValue().toString();
-//                            holder.product_quantity.setText("Sisa: " + stock);
+                            holder.product_stock.setText("Sisa: " + stock);
                         }
                     }
                     @Override
@@ -160,17 +160,40 @@ public class UserBarangFragment extends Fragment {
         adapter.startListening();
     }
 
-    public static class UserProductViewholder extends RecyclerView.ViewHolder {
-        TextView product_name, product_price, product_quantity;
+    public static class UserProductViewholder extends RecyclerView.ViewHolder{
+        TextView product_name, product_price, product_stock;
+        Button info_btn;
         ImageView product_image_path;
         public UserProductViewholder(@NonNull View itemView) {
             super(itemView);
             product_name = itemView.findViewById(R.id.product_name);
             product_price = itemView.findViewById(R.id.product_price);
-            product_quantity = itemView.findViewById(R.id.prduct_quantity);
+            product_stock = itemView.findViewById(R.id.product_stock);
 //            product_image = itemView.findViewById(R.id.product_image);
+            info_btn = itemView.findViewById(R.id.infoBtn);
+            info_btn.setOnClickListener(v -> {
+                mClickListener.onItemClick(v, getAdapterPosition());
+                Toast.makeText(v.getContext(),"Navigating to " + product_name + " detail.",Toast.LENGTH_SHORT).show();
+//                    Intent detailIntent = new Intent(Intent.)
+            });
+        }
+
+        private UserProductViewholder.ClickListener mClickListener;
+
+        //Interface to send callbacks...
+        public interface ClickListener{
+            public void onItemClick(View view, int position);
+            public void onItemLongClick(View view, int position);
+        }
+
+        public void setOnClickListener(UserProductViewholder.ClickListener clickListener){
+            mClickListener = clickListener;
         }
     }
+
+
+
+
 
     // Function to tell the app to stop getting
     // data from database on stopping of the activity
