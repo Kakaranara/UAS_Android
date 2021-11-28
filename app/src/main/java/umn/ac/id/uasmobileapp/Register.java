@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.UUID;
 
 public class Register extends AppCompatActivity {
-    EditText inputBName, inputEmail, inputPassword, inputRePassword;
+    EditText inputBName, inputEmail, inputAddress, inputPhoneNumber;
     Button btnRegister;
 
     FirebaseDatabase rootNode;
@@ -27,43 +27,41 @@ public class Register extends AppCompatActivity {
 
         inputBName = findViewById(R.id.inputBName);
         inputEmail = findViewById(R.id.inputEmail);
-        inputPassword = findViewById(R.id.inputPassword);
-        inputRePassword = findViewById(R.id.inputRePassword);
+        inputAddress = findViewById(R.id.inputAddress);
+        inputPhoneNumber = findViewById(R.id.inputPhoneNumber);
         btnRegister = findViewById(R.id.btnRegister);
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 rootNode = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/");
-                reference = rootNode.getReference("users");
+                reference = rootNode.getReference("business");
+                
 
                 //Get user input values
-                String bName = inputBName.getText().toString();
+                String business_name = inputBName.getText().toString();
                 String email = inputEmail.getText().toString().replace(".",",");
-                String password = Login.md5("U" + inputPassword.getText().toString());
-                String passwordVal = Login.md5("U" + inputRePassword.getText().toString());
+                String address = inputAddress.getText().toString();
+                String phone_number = inputPhoneNumber.getText().toString();
 
-                if(validate(password, passwordVal)) {
-                    UserHelperClass helperClass = new UserHelperClass(bName, email, password);
-
-//                    String userID = "U" + UUID.randomUUID().toString();
-//                    String userID = email;
-
-                    reference.child(email).setValue(helperClass);
-                    Toast.makeText(Register.this, "Succesfully Registered", Toast.LENGTH_SHORT).show();
-                } else{
-                    Toast.makeText(Register.this,"Password Not matching",Toast.LENGTH_SHORT).show();
-                }
+                UserHelperClass helperClass = new UserHelperClass(business_name, email, address, phone_number);
+                reference.child(email).setValue(helperClass);
+                Toast.makeText(Register.this, "Succesfully Registered", Toast.LENGTH_SHORT).show();
+//                if(validate(password, passwordVal)) {
+//
+//                } else{
+//                    Toast.makeText(Register.this,"Password Not matching",Toast.LENGTH_SHORT).show();
+//                }
             }
 
-            private boolean validate(String password, String passwordVal) {
-                boolean temp=true;
-
-                if(!password.equals(passwordVal)){
-                    temp=false;
-                }
-                return temp;
-            }
+//            private boolean validate(String password, String passwordVal) {
+//                boolean temp=true;
+//
+//                if(!password.equals(passwordVal)){
+//                    temp=false;
+//                }
+//                return temp;
+//            }
         });
     }
 }
