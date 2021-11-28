@@ -14,7 +14,7 @@
             android:name=".AdminPembayaranFragment"
             android:exported="false" />
         <activity
-            android:name=".UserMainMenu"
+            android:name=".UserActivity"
             android:exported="true" />
         <activity
             android:name=".AdminActivity"

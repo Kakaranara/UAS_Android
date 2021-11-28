@@ -2,6 +2,7 @@ package umn.ac.id.uasmobileapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -121,6 +124,9 @@ public class Login extends AppCompatActivity {
                         inputPassword.setError(null);
                         loginUser = true;
                         Toast.makeText(Login.this,"User Login Success",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Login.this, UserActivity.class);
+                        intent.putExtra("businessName", "TokkiDoki");
+                        startActivity(intent);
                     } else if(passwordFromDB.equals(md5(userEnteredPassword + "admin"))){
                         loginAdmin = true;
                         Toast.makeText(Login.this, "Admin Login Success", Toast.LENGTH_SHORT).show();
