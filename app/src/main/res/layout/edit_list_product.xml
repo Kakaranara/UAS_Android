@@ -152,7 +152,7 @@
             <EditText
                 android:id="@+id/name_fill"
                 android:layout_width="350dp"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:background="@drawable/edit_fill"
                 app:layout_constraintBottom_toBottomOf="@+id/name"
                 android:textColor="@color/white"
@@ -174,7 +174,7 @@
             <EditText
                 android:id="@+id/price_fill"
                 android:layout_width="320dp"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:background="@drawable/edit_fill"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/price"
@@ -186,7 +186,7 @@
             <EditText
                 android:id="@+id/discount_fill"
                 android:layout_width="350dp"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:background="@drawable/edit_fill"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/discount"
@@ -198,7 +198,7 @@
             <EditText
                 android:id="@+id/stock_fill"
                 android:layout_width="350dp"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:background="@drawable/edit_fill"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/stock"

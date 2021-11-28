@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".AdminPembayaranFragment"
+    android:padding="30dp">
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/back_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/tophead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/back"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/back"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        app:layout_constraintVertical_bias="0.04000002"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirmation"
+            android:textColor="@color/white"
+            android:textSize="35sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/order_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#00002"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/layer1"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/line_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tophead"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/tophead"
+        app:layout_constraintTop_toBottomOf="@id/tophead"
+        app:layout_constraintVertical_bias="0.04000002" />
+
+
+
+    <ImageView
+        android:id="@+id/layer2"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/line_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tophead"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/tophead"
+        app:layout_constraintTop_toBottomOf="@id/tophead"
+        app:layout_constraintVertical_bias="0.69" />
+
+    <TextView
+        android:id="@+id/ket1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="Total Discount"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/layer2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/layer2"
+        app:layout_constraintTop_toBottomOf="@id/layer2"
+        app:layout_constraintVertical_bias="0.19" />
+
+    <TextView
+        android:id="@+id/total_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="Rp 0"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/ket1"
+        app:layout_constraintEnd_toEndOf="@id/layer2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/ket1"
+        app:layout_constraintTop_toTopOf="@id/ket1" />
+
+    <TextView
+        android:id="@+id/ket2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sub Total"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/ket1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/ket1"
+        app:layout_constraintTop_toBottomOf="@id/ket1" />
+
+    <TextView
+        android:id="@+id/total_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rp 40.000"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/total_discount"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/total_discount"
+        app:layout_constraintTop_toBottomOf="@id/total_discount" />
+
+    <LinearLayout
+        android:id="@+id/tophead_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.65"
+        app:layout_constraintStart_toEndOf="@id/back"
+        app:layout_constraintTop_toTopOf="@id/back"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Payment"
+            android:textColor="@color/white"
+            android:textSize="35sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/payment_method"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1 Payment method available"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/layer3"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/line_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tophead_right"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/tophead_right"
+        app:layout_constraintTop_toBottomOf="@id/tophead_right"
+        app:layout_constraintVertical_bias="0.04000002" />
+
+    <ImageView
+        android:id="@+id/layer4"
+        android:layout_width="550dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/line_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tophead_right"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/tophead_right"
+        app:layout_constraintTop_toBottomOf="@id/tophead_right"
+        app:layout_constraintVertical_bias="0.78" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment Method"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tophead_right"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/tophead_right"
+        app:layout_constraintTop_toBottomOf="@id/layer3"
+        app:layout_constraintVertical_bias="0.01999998" />
+
+    <Button
+        android:id="@+id/cash_payment"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:background="@drawable/icon_pembayaran_cash"
+        app:layout_constraintBottom_toTopOf="@id/layer4"
+        app:layout_constraintEnd_toEndOf="@id/layer3"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/layer3"
+        app:layout_constraintTop_toBottomOf="@id/layer3"
+        app:layout_constraintVertical_bias="0.16000003" />
+
+    <TextView
+        android:id="@+id/pay_m_ket1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Purchaser Name"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@id/layer4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/cash_payment"
+        app:layout_constraintTop_toBottomOf="@id/cash_payment"
+        app:layout_constraintVertical_bias="0.060000002" />
+
+    <EditText
+        android:id="@+id/purchaser_name"
+        android:layout_width="550dp"
+        android:layout_height="50dp"
+        android:textColor="@color/white"
+        android:background="@drawable/edit_fill"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/layer3"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/layer3"
+        app:layout_constraintTop_toBottomOf="@id/pay_m_ket1"
+        app:layout_constraintVertical_bias="0.060000002" />
+
+    <TextView
+        android:id="@+id/pay_m_ket2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone Number"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@id/layer4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/cash_payment"
+        app:layout_constraintTop_toBottomOf="@id/purchaser_name"
+        app:layout_constraintVertical_bias="0.13" />
+
+    <EditText
+        android:id="@+id/phone_number"
+        android:layout_width="550dp"
+        android:layout_height="50dp"
+        android:background="@drawable/edit_fill"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/layer3"
+        app:layout_constraintStart_toStartOf="@id/layer3"
+        app:layout_constraintTop_toBottomOf="@id/pay_m_ket2"
+        app:layout_constraintVertical_bias="0.06999999" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:background="@drawable/cancel_payment_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/layer4"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/layer4"
+        app:layout_constraintTop_toBottomOf="@id/layer4" />
+
+    <Button
+        android:id="@+id/confirm_payment"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:background="@drawable/confirm_payment_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/layer4"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/layer4"
+        app:layout_constraintTop_toBottomOf="@id/layer4" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="550dp"
+    android:layout_height="wrap_content"
+    android:background="@color/black"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="@id/layer1"
+    app:layout_constraintHorizontal_bias="0.0"
+    app:layout_constraintStart_toStartOf="@id/layer1"
+    app:layout_constraintTop_toBottomOf="@id/layer1"
+    app:layout_constraintVertical_bias="0.01999998">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/product_pic"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/makanan_default"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/product_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nasi Goreng Sambalado"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/product_pic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.08"
+            app:layout_constraintStart_toEndOf="@id/product_pic"
+            app:layout_constraintTop_toTopOf="@id/product_pic"/>
+
+        <TextView
+            android:id="@+id/dis_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Discount :"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/product_pic"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/product_pic"
+            app:layout_constraintTop_toBottomOf="@id/product_pic"
+            app:layout_constraintVertical_bias="0.19" />
+
+        <EditText
+            android:id="@+id/notes"
+            android:layout_width="420dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edit_fill"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/dis_desc"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/dis_desc"
+            app:layout_constraintTop_toBottomOf="@id/dis_desc" />
+
+        <EditText
+            android:id="@+id/product_qty"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/qty_fill_payment"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/product_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.35"
+            app:layout_constraintStart_toEndOf="@id/product_name"
+            app:layout_constraintTop_toTopOf="@id/product_name" />
+
+        <TextView
+            android:id="@+id/product_price"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="Rp 20.000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/product_qty"
+            app:layout_constraintBottom_toBottomOf="@id/product_qty"
+            app:layout_constraintStart_toEndOf="@id/product_qty"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/product_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rp 0"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/dis_desc"
+            app:layout_constraintEnd_toEndOf="@id/product_price"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@id/product_price"
+            app:layout_constraintTop_toTopOf="@id/dis_desc" />
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/delete_pay_btn"
+            app:layout_constraintBottom_toBottomOf="@id/notes"
+            app:layout_constraintEnd_toEndOf="@id/product_discount"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/notes"
+            app:layout_constraintTop_toTopOf="@id/notes" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>
