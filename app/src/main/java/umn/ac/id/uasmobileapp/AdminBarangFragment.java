@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,11 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AdminBarangFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class AdminBarangFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
@@ -45,14 +42,7 @@ public class AdminBarangFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AdminBarangFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
     /*public static AdminBarangFragment newInstance(String param1, String param2) {
         AdminBarangFragment fragment = new AdminBarangFragment();
@@ -84,7 +74,8 @@ public class AdminBarangFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.rvProduct);
 
         // To display the Recycler view linearly
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 3);
+        recyclerView.setLayoutManager(mLayoutManager);
 
         // Connecting Adapter class with the Recycler view*/
         return view;
