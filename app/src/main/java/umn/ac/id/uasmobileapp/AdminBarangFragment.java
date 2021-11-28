@@ -1,5 +1,6 @@
 package umn.ac.id.uasmobileapp;
 
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -22,12 +26,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class AdminBarangFragment extends Fragment {
+public class AdminBarangFragment extends Fragment implements View.OnClickListener{
     private View view;
     private RecyclerView recyclerView;
     AdminProductAdapter adapter; // Create Object of the Adapter class
-    DatabaseReference mbase;
-    private String currentUser = "Wkwk";
+    DatabaseReference mbase, productRef;
+    private String currentUser = "BU00001";
+    public Button button;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -66,6 +71,8 @@ public class AdminBarangFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_admin_barang, container, false);
+        button = view.findViewById(R.id.manage_k);
+        button.setOnClickListener(this);
 
         // Create a instance of the database and get
         // its reference
@@ -90,7 +97,7 @@ public class AdminBarangFragment extends Fragment {
         // It is a class provide by the FirebaseUI to make a query in the database to fetch appropriate data
         FirebaseRecyclerOptions<Product> options
                 = new FirebaseRecyclerOptions.Builder<Product>()
-                .setQuery(mbase.child(currentUser), Product.class)
+                .setQuery(mbase, Product.class)
                 .build();
 
         FirebaseRecyclerAdapter<Product, AdminProductViewholder> adapter
@@ -101,22 +108,22 @@ public class AdminBarangFragment extends Fragment {
 
                         holder.product_name.setText(product_name);
 
-                        DatabaseReference getTypeRef = getRef(position).child("price").getRef();
+                        //DatabaseReference getTypeRef = getRef(position).;
 
-                        getTypeRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.exists()){
-                                    String price = dataSnapshot.getValue().toString();
-                                    holder.product_price.setText(price);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
+//                        mbase.orderByChild("business_id").equalTo(currentUser).addValueEventListener(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                if(dataSnapshot.exists()){
+//                                    String price = dataSnapshot.child("price").getValue().toString();
+//                                    holder.product_price.setText(price);
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
 
                         //holder.product_quantity.setText(model.getStock());
                     }
@@ -131,6 +138,49 @@ public class AdminBarangFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
         adapter.startListening();
+    }
+
+    @Override
+    public void onClick(View view) {
+        showCustomDialog();
+    }
+
+    void showCustomDialog(){
+        final Dialog dialog = new Dialog(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+
+        dialog.setContentView(R.layout.edit_list_product);
+        final EditText nameEt = dialog.findViewById(R.id.name_fill);
+        final EditText priceEt = dialog.findViewById(R.id.price_fill);
+        final EditText discountEt = dialog.findViewById(R.id.discount_fill);
+        final EditText stockEt = dialog.findViewById(R.id.stock_fill);
+        final EditText descEt = dialog.findViewById(R.id.desc_fill);
+        Button submit = dialog.findViewById(R.id.submit);
+        Button cancel = dialog.findViewById(R.id.cancel);
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = nameEt.getText().toString();
+                String price = priceEt.getText().toString();
+                String discount = discountEt.getText().toString();
+                String stock = stockEt.getText().toString();
+                String desc = descEt.getText().toString();
+
+                //Insert Data to Database
+
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     public static class AdminProductViewholder extends RecyclerView.ViewHolder {
