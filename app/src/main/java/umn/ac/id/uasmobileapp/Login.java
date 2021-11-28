@@ -125,7 +125,7 @@ public class Login extends AppCompatActivity {
                         loginUser = true;
                         Toast.makeText(Login.this,"User Login Success",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, UserActivity.class);
-                        intent.putExtra("businessName", "TokkiDoki");
+                        intent.putExtra("businessName", dataSnapshot.child("business_name").getValue(String.class));
                         startActivity(intent);
                     } else if(passwordFromDB.equals(md5(userEnteredPassword + "admin"))){
                         loginAdmin = true;
