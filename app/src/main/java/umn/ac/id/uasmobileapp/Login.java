@@ -123,7 +123,7 @@ public class Login extends AppCompatActivity {
                         Toast.makeText(Login.this,"User Login Success",Toast.LENGTH_SHORT).show();
                     } else if(passwordFromDB.equals(md5(userEnteredPassword + "admin"))){
                         loginAdmin = true;
-                        Toast.makeText(Login.this, "Admin Login Succes", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Admin Login Success", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, AdminActivity.class);
                         intent.putExtra("businessName", dataSnapshot.child("bName").getValue(String.class));
                         startActivity(intent);
