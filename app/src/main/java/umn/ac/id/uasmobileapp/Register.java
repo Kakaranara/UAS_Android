@@ -35,17 +35,22 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 rootNode = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/");
-                reference = rootNode.getReference("business");
-                
+                reference = rootNode.getReference("business").push();
+                String key = reference.getKey();
 
                 //Get user input values
                 String business_name = inputBName.getText().toString();
-                String email = inputEmail.getText().toString().replace(".",",");
+                String email = inputEmail.getText().toString();
                 String address = inputAddress.getText().toString();
                 String phone_number = inputPhoneNumber.getText().toString();
 
                 UserHelperClass helperClass = new UserHelperClass(business_name, email, address, phone_number);
-                reference.child(email).setValue(helperClass);
+                reference.setValue(helperClass);
+                for(int i=0; i<4; i++){
+                    reference.child("Employee").push().setValue(true);
+                }
+
+//                reference.child(email).setValue(helperClass);
                 Toast.makeText(Register.this, "Succesfully Registered", Toast.LENGTH_SHORT).show();
 //                if(validate(password, passwordVal)) {
 //
