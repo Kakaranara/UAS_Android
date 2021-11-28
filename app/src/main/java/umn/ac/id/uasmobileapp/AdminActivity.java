@@ -18,6 +18,7 @@ import android.widget.TextView;
 public class AdminActivity extends AppCompatActivity {
     ImageButton btnBarangAdmin,btnHome,btnPesananAdmin;
     TextView tVnamaBisnisAdmin;
+    Session session;
 //    Constraints navbar;
 
     @Override
@@ -29,6 +30,9 @@ public class AdminActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         String bName = extras.getString("businessName");
         tVnamaBisnisAdmin.setText(bName);
+        session = new Session(getApplicationContext());
+        String key = session.getKey();
+        System.out.println("----------------------------- KEY : " + key);
 
         if(savedInstanceState == null){
             getSupportFragmentManager()

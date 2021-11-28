@@ -27,6 +27,9 @@ public class Login extends AppCompatActivity {
     EditText inputEmail, inputPassword;
     Button btnLogin;
     String passwordFromDB;
+    String emailSession;
+    String keySession;
+    private Session session;
     public static boolean loginUser = false;
     public static boolean loginAdmin = false;
 
@@ -37,6 +40,8 @@ public class Login extends AppCompatActivity {
 
         inputEmail = findViewById(R.id.inputEmail);
         inputPassword = findViewById(R.id.inputPassword);
+
+        session = new Session(getApplicationContext());
 
 //        btnLogin.setOnClickListener(this::loginUser);
     }
@@ -118,17 +123,21 @@ public class Login extends AppCompatActivity {
                     inputEmail.setError(null);
                     for(DataSnapshot userSnapshot: dataSnapshot.getChildren()){
                         passwordFromDB = userSnapshot.child("password").getValue(String.class);
+                        emailSession = userSnapshot.child("email").getValue(String.class);
+                        keySession = userSnapshot.getKey();
                     }
 
                     if(passwordFromDB.equals(md5(userEnteredPassword + "user"))){
                         inputPassword.setError(null);
                         loginUser = true;
+                        session.setKey(keySession);
                         Toast.makeText(Login.this,"User Login Success",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, UserActivity.class);
                         intent.putExtra("businessName", "TokkiDoki");
                         startActivity(intent);
                     } else if(passwordFromDB.equals(md5(userEnteredPassword + "admin"))){
                         loginAdmin = true;
+                        session.setKey(keySession);
                         Toast.makeText(Login.this, "Admin Login Success", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, AdminActivity.class);
                         intent.putExtra("businessName", dataSnapshot.child("bName").getValue(String.class));
