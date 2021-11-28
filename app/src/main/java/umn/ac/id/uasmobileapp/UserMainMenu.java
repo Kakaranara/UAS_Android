@@ -23,7 +23,7 @@ public class UserMainMenu extends AppCompatActivity {
         }
 
         mRecyclerView = (RecyclerView) findViewById(R.id.products_recycler_view);
-        mAdapter = new ProductsListAdapter(this, mProductsList);
+        //mAdapter = new ProductsListAdapter(this, mProductsList);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 

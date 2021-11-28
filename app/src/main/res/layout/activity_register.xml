@@ -161,7 +161,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/LinearLayoutPassword"
+            android:id="@+id/LinearLayoutAddress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50sp"
@@ -177,22 +177,22 @@
                 style="@style/textLoginDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/inputPassword"
-                android:text="@string/password" />
+                android:labelFor="@+id/inputAddress"
+                android:text="@string/address" />
 
             <EditText
-                android:id="@+id/inputPassword"
+                android:id="@+id/inputAddress"
                 style="@style/editTextInputLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
-                android:inputType="textWebPassword"
+                android:inputType="text"
                 tools:ignore="DuplicateSpeakableTextCheck,DuplicateSpeakableTextCheck" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/LinearLayoutRePassword"
+            android:id="@+id/LinearLayoutPhoneNumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50sp"
@@ -201,23 +201,23 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/LinearLayoutPassword"
+            app:layout_constraintTop_toBottomOf="@id/LinearLayoutAddress"
             app:layout_constraintVertical_bias="0.050000012">
 
             <TextView
                 style="@style/textLoginDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/inputRePassword"
-                android:text="@string/repeat_password" />
+                android:labelFor="@+id/inputPhoneNumber"
+                android:text="@string/phone_number" />
 
             <EditText
-                android:id="@+id/inputRePassword"
+                android:id="@+id/inputPhoneNumber"
                 style="@style/editTextInputLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
-                android:inputType="textWebPassword"
+                android:inputType="text"
                 tools:ignore="DuplicateSpeakableTextCheck,DuplicateSpeakableTextCheck" />
 
         </LinearLayout>
@@ -231,10 +231,10 @@
             android:layout_marginStart="100sp"
             android:layout_marginEnd="100sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/LinearLayoutRePassword"
+            app:layout_constraintEnd_toEndOf="@id/LinearLayoutPhoneNumber"
             app:layout_constraintHorizontal_bias="0.51"
-            app:layout_constraintStart_toStartOf="@id/LinearLayoutRePassword"
-            app:layout_constraintTop_toBottomOf="@+id/LinearLayoutRePassword"
+            app:layout_constraintStart_toStartOf="@id/LinearLayoutPhoneNumber"
+            app:layout_constraintTop_toBottomOf="@+id/LinearLayoutPhoneNumber"
             app:layout_constraintVertical_bias="0.13999999"
             tools:ignore="TextContrastCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+<<<<<<< Updated upstream
         <entry key="..\:/UAS_Android/app/src/main/res/layout/activity_admin.xml" value="0.15021929824561403" />
         <entry key="..\:/UAS_Android/app/src/main/res/layout/activity_login.xml" value="0.15021929824561403" />
         <entry key="..\:/UAS_Android/app/src/main/res/layout/activity_main.xml" value="0.15021929824561403" />
@@ -19,9 +20,19 @@
         <entry key="..\:/UAS_Android/app/src/main/res/layout/payment_list_edit.xml" value="0.536" />
         <entry key="..\:/UAS_Android/app/src/main/res/layout/product_list_admin.xml" value="0.536" />
         <entry key="..\:/UAS_Android/app/src/main/res/layout/products_list.xml" value="0.536" />
+=======
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/activity_admin.xml" value="0.12637061403508773" />
+>>>>>>> Stashed changes
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/activity_login.xml" value="0.15" />
         <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/activity_register.xml" value="0.11" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/activity_register.xml" value="0.1" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/activity_user_main_menu.xml" value="0.12" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/edit_list_product.xml" value="0.25" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/fragment_admin_barang.xml" value="0.12" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/fragment_admin_home.xml" value="0.2" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/fragment_admin_pesanan.xml" value="0.14775641025641026" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/product_list_admin.xml" value="0.25" />
+        <entry key="..\:/Users/Lenovo/AndroidStudioProjects/UAS_Android/app/src/main/res/layout/products_list.xml" value="0.25" />
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.19166666666666668" />
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/drawable/ic_launcher_background.xml" value="0.19166666666666668" />
         <entry key="..\:/Users/wahyu/Desktop/Project/AndroidStudio/UAS_Android/app/src/main/res/drawable/rounded_color_edit_text.xml" value="0.14375" />
