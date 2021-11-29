@@ -138,7 +138,7 @@
         android:id="@+id/namaBisnisAdmin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="cursive"
+        android:fontFamily="@font/nunito_black"
         android:text="'Nama Bisnis' "
         android:textColor="@color/dark_blue"
         android:textSize="50sp"
