@@ -130,6 +130,12 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
 //                        });
 
                         //holder.product_quantity.setText(model.getStock());
+                        holder.editBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                showEditDialog();
+                            }
+                        });
                     }
 
                     @NonNull
@@ -150,6 +156,52 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
     }
 
     void showCustomDialog(){
+        final Dialog dialog = new Dialog(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+
+        dialog.setContentView(R.layout.add_product_admin);
+        final EditText nameEt = dialog.findViewById(R.id.name_fill);
+        final EditText priceEt = dialog.findViewById(R.id.price_fill);
+        final EditText discountEt = dialog.findViewById(R.id.discount_fill);
+        final EditText stockEt = dialog.findViewById(R.id.stock_fill);
+        final EditText descEt = dialog.findViewById(R.id.desc_fill);
+        Button submit = dialog.findViewById(R.id.submit);
+        Button cancel = dialog.findViewById(R.id.cancel);
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rootNode = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/");
+                reference = rootNode.getReference("business").push();
+                String key = reference.getKey();
+
+                String name = nameEt.getText().toString();
+                String price = priceEt.getText().toString();
+                String discount = discountEt.getText().toString();
+                String stock = stockEt.getText().toString();
+                String desc = descEt.getText().toString();
+
+                //Insert Data to Database
+                ProductHelperClass helperClass = new ProductHelperClass();
+                reference.setValue(helperClass);
+                for(int i=0; i<4; i++){
+                    reference.child("Employee").push().setValue(true);
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    void showEditDialog(){
         final Dialog dialog = new Dialog(getContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -197,12 +249,14 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
 
     public static class AdminProductViewholder extends RecyclerView.ViewHolder {
         TextView product_name, product_price, product_quantity;
+        Button editBtn;
         public AdminProductViewholder(@NonNull View itemView)
         {
             super(itemView);
             product_name = itemView.findViewById(R.id.product_name);
             product_price = itemView.findViewById(R.id.product_price);
             product_quantity = itemView.findViewById(R.id.prduct_quantity);
+            editBtn = itemView.findViewById(R.id.editBtn);
         }
     }
 
