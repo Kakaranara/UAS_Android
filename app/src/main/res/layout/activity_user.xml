@@ -110,12 +110,21 @@
                     android:textFontWeight="700"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
-
+                <TextView
+                    android:id="@+id/business_id"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="no business id yet"
+                    android:textSize="30sp"
+                    android:textFontWeight="700"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/subtitle"/>
                 <TextView
                     android:id="@+id/subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add Items"
+                    android:text="Main Menu"
                     android:textColor="@color/dark_blue"
                     android:textSize="20sp"
                     android:textAlignment="textEnd"
@@ -231,12 +240,18 @@
                 android:layout_height="2dp"
                 android:background="#ffffff"
                 app:layout_constraintTop_toBottomOf="@id/title_layout"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/cart_list_recycler_view"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/cart_list_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/separator"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/result_and_button_layout"
@@ -294,7 +309,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:text="Rp 40.000"
+                    android:text="Rp 0"
                     app:layout_constraintWidth_percent=".30"
                     android:fontFamily="@font/nunito_sans_extralight"
                     app:layout_constraintTop_toBottomOf="@id/discount"

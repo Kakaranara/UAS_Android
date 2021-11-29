@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,8 +22,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class UserActivity extends AppCompatActivity {
     ImageButton btnHome;
-    TextView tvNamaBisnis;
-    String namaBisnis;
+    TextView tvNamaBisnis, tvNamaBisnis2, tvBusinessId;
+    String namaBisnis, businessId;
     Session session;
 //    Constraints navbar;
 
@@ -31,6 +32,8 @@ public class UserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
         tvNamaBisnis = findViewById(R.id.nama_bisnis);
+        tvNamaBisnis2 = findViewById(R.id.shop_name);
+        tvBusinessId = findViewById(R.id.business_id);
         session = new Session(getApplicationContext());
         String key = session.getKey();
 
@@ -43,8 +46,24 @@ public class UserActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()){
                     for(DataSnapshot businessSnapshot : dataSnapshot.getChildren()){
                         namaBisnis = businessSnapshot.child("business_name").getValue(String.class);
+                        Toast.makeText(UserActivity.this,"Business name: " + namaBisnis,Toast.LENGTH_SHORT).show();
+
+                        businessId = businessSnapshot.getKey();
+                        Toast.makeText(UserActivity.this,"Business ID KEY: " + businessId,Toast.LENGTH_SHORT).show();
                     }
                     tvNamaBisnis.setText(namaBisnis);
+                    tvNamaBisnis2.setText(namaBisnis);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("businessId", businessId);
+                    UserBarangFragment userBarangFragment = new UserBarangFragment();
+                    userBarangFragment.setArguments(bundle);
+
+                    if(savedInstanceState == null){
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.user_container_fragment, userBarangFragment)
+                                .commit();
+                    }
                 }
                 else{
                     Log.d("Datasnapshot", "onDataChange: NULL");
@@ -57,12 +76,9 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        if(savedInstanceState == null){
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.user_container_fragment, new UserBarangFragment())
-                    .commit();
-        }
+
+
+
 
         btnHome = findViewById(R.id.btnHome);
 

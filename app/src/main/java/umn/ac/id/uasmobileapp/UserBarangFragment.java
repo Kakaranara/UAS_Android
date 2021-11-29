@@ -24,6 +24,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Registry;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +34,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.InputStream;
@@ -41,9 +44,18 @@ public class UserBarangFragment extends Fragment {
     private RecyclerView recyclerView;
     DatabaseReference mbase;
     FirebaseStorage storage;
-    private String currentUser = "Wkwk";
+    private String currentUser = "Wkwk", sessionBusinessId;
+    FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder> adapter;
 
     public UserBarangFragment() {}
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            sessionBusinessId = bundle.getString("businessId", "");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,89 +92,117 @@ public class UserBarangFragment extends Fragment {
                 .build();
 
 
-        FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder> adapter
-                = new FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder>(options) {
+        adapter = new FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull UserBarangFragment.UserProductViewholder holder, int position, @NonNull Product model) {
-                final String product_key = getRef(position).getKey();
-                holder.product_key.setText(product_key);
-
-                // Get product name value
-                DatabaseReference getName = getRef(position).child("product_name").getRef();
-                getName.addValueEventListener(new ValueEventListener() {
+                DatabaseReference getBusinessId = getRef(position).child("business_id").getRef();
+                getBusinessId.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
-                            String name = dataSnapshot.getValue().toString();
-                            holder.product_name.setText(name);
+                            String businessId = dataSnapshot.getValue().toString();
+                            if(businessId.equals(sessionBusinessId)){
+                                final String product_key = getRef(holder.getAdapterPosition()).getKey();
+                                holder.product_key.setText(product_key);
+
+                                // Get product name value
+                                DatabaseReference getName = getRef(holder.getAdapterPosition()).child("product_name").getRef();
+                                getName.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.exists()){
+                                            String name = dataSnapshot.getValue().toString();
+                                            holder.product_name.setText(name);
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                                });
+
+                                // Get price value
+                                DatabaseReference getPrice = getRef(holder.getAdapterPosition()).child("price").getRef();
+                                getPrice.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.exists()){
+                                            String price = dataSnapshot.getValue().toString();
+                                            holder.product_price.setText("Rp " + price);
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                                });
+
+                                // Get quantity/stock value
+                                DatabaseReference getStock = getRef(holder.getAdapterPosition()).child("stock").getRef();
+                                getStock.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.exists()){
+                                            String stock = dataSnapshot.getValue().toString();
+                                            holder.product_stock.setText("Sisa: " + stock);
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                                });
+
+                                // Get image path value
+                                DatabaseReference getImagePath = getRef(holder.getAdapterPosition()).child("picture_path").getRef();
+                                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                                StorageReference imageRef = storageRef.child("/images/products/" + getImagePath);
+//                                Toast.makeText(getActivity().getApplication(), "Image path: " + imageRef.getDownloadUrl(), Toast.LENGTH_SHORT).show();
+
+                                imageRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
+//                                    Toast.makeText(getActivity().getApplication(), "Url: " + downloadUrl, Toast.LENGTH_SHORT).show();
+                                    Glide.with(getActivity().getApplicationContext())
+                                            .load(downloadUrl)
+                                            .into(holder.product_image);
+                                });
+
+//                                getImagePath.addValueEventListener(new ValueEventListener() {
+//                                    @Override
+//                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                        if(dataSnapshot.exists()){
+//                                            String imagePath = dataSnapshot.getValue().toString();
+//
+//                                            // Create a reference with an initial file path and name
+//                                            // Points to the root reference
+//                                            Task<Uri> imageStoragePath = storage
+//                                                    .getReference()
+//                                                    .child("images/products/" + imagePath)
+//                                                    .getDownloadUrl();
+//
+//                                            Toast.makeText(getActivity().getApplication(), "Image path: " + imageStoragePath, Toast.LENGTH_SHORT).show();
+//
+////                            final long ONE_MEGABYTE = 1024 * 1024;
+////                            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+////                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                                            Glide.with(getActivity().getApplicationContext())
+//                                                    .load(imageStoragePath)
+//                                                    .into(holder.product_image);
+////                            }).addOnFailureListener(exception -> Toast.makeText(getActivity().getApplicationContext(),
+////                                    "Product picture is not found.",
+////                                    Toast.LENGTH_LONG).show());;
+//
+//                                        } else Toast.makeText(getActivity().getApplication(), "Image path not found.", Toast.LENGTH_SHORT).show();
+//
+//                                    }
+//                                    @Override
+//                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                                        Toast.makeText(getActivity().getApplication(), "Image path retrieve cancelled.", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                });
+                            } else
+                                Toast.makeText(getActivity().getApplicationContext(), businessId + " " + sessionBusinessId,Toast.LENGTH_SHORT).show();
+
                         }
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {}
                 });
 
-                // Get price value
-                DatabaseReference getPrice = getRef(position).child("price").getRef();
-                getPrice.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            String price = dataSnapshot.getValue().toString();
-                            holder.product_price.setText("Rp " + price);
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                });
 
-                // Get quantity/stock value
-                DatabaseReference getStock = getRef(position).child("stock").getRef();
-                getStock.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            String stock = dataSnapshot.getValue().toString();
-                            holder.product_stock.setText("Sisa: " + stock);
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                });
-
-                // Get image path value
-                DatabaseReference getImagePath = getRef(position).child("picture_path").getRef();
-                getImagePath.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            String imagePath = dataSnapshot.getValue().toString();
-
-                            // Create a reference with an initial file path and name
-                            // Points to the root reference
-                            StorageReference storageRef = storage
-                                    .getReference()
-                                    .child("images/products/" + imagePath);
-
-                            Toast.makeText(getActivity().getApplication(), "Image path: images/products/" + imagePath, Toast.LENGTH_SHORT).show();
-
-//                            final long ONE_MEGABYTE = 1024 * 1024;
-//                            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-//                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                Glide.with(getActivity().getApplicationContext())
-                                        .load(storageRef)
-                                        .into(holder.product_image);
-//                            }).addOnFailureListener(exception -> Toast.makeText(getActivity().getApplicationContext(),
-//                                    "Product picture is not found.",
-//                                    Toast.LENGTH_LONG).show());;
-
-                        } else Toast.makeText(getActivity().getApplication(), "Image path not found.", Toast.LENGTH_SHORT).show();
-
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(getActivity().getApplication(), "Image path retrieve cancelled.", Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
 
             @NonNull
@@ -220,7 +260,9 @@ public class UserBarangFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        adapter.stopListening();
     }
+
     // Used to put space between items in recycler view
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
