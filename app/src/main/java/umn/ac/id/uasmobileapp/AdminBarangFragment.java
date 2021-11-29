@@ -24,7 +24,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.UUID;
 
 
 public class AdminBarangFragment extends Fragment implements View.OnClickListener{
@@ -34,6 +37,8 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
     DatabaseReference mbase, productRef;
     private String currentUser = "BU00001";
     public Button button;
+    private String key;
+    Session session;
 
     FirebaseDatabase rootNode;
     DatabaseReference reference;
@@ -80,6 +85,10 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
 
         // Create a instance of the database and get
         // its reference
+        session = new Session(getContext());
+        key = session.getKey();
+        System.out.println("----------------------------- KEY : " + key);
+
         mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
 
         recyclerView = (RecyclerView) view.findViewById(R.id.rvProduct);
@@ -108,26 +117,66 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
                 = new FirebaseRecyclerAdapter<Product, AdminProductViewholder>(options) {
                     @Override
                     protected void onBindViewHolder(@NonNull AdminProductViewholder holder, int position, @NonNull Product model) {
-                        final String product_name = getRef(position).getKey();
+                        final String product_key = getRef(position).getKey();
 
-                        holder.product_name.setText(product_name);
+                        //Query query = mbase.orderByChild("business_id").equalTo(key);
+                        DatabaseReference getName = getRef(position).child("product_name").getRef();
 
-                        //DatabaseReference getTypeRef = getRef(position).;
+                        getName.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
+                                    String name = dataSnapshot.getValue().toString();
+                                    holder.product_name.setText(name);
+                                }
+                            }
 
-//                        mbase.orderByChild("business_id").equalTo(currentUser).addValueEventListener(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                if(dataSnapshot.exists()){
-//                                    String price = dataSnapshot.child("price").getValue().toString();
-//                                    holder.product_price.setText(price);
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                            }
-//                        });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        DatabaseReference getPrice = getRef(position).child("product_price").getRef();
+                        getPrice.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
+                                    String price = dataSnapshot.getValue().toString();
+                                    holder.product_price.setText(price);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        DatabaseReference getStock = getRef(position).child("stock").getRef();
+                        getStock.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
+                                    String stock = dataSnapshot.getValue().toString();
+                                    holder.product_quantity.setText(stock);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        holder.deleteBtn.setText(product_key);
+
+                        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                mbase.child((String) holder.deleteBtn.getText()).removeValue();
+                            }
+                        });
 
                         //holder.product_quantity.setText(model.getStock());
                         holder.editBtn.setOnClickListener(new View.OnClickListener() {
@@ -172,22 +221,25 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("Tombol Submit di Klik");
                 rootNode = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/");
-                reference = rootNode.getReference("business").push();
-                String key = reference.getKey();
+                reference = rootNode.getReference("products");
+                //String key = reference.getKey();
 
-                String name = nameEt.getText().toString();
-                String price = priceEt.getText().toString();
-                String discount = discountEt.getText().toString();
-                String stock = stockEt.getText().toString();
-                String desc = descEt.getText().toString();
+                String product_name = nameEt.getText().toString();
+                String etPrice= priceEt.getText().toString();
+                int price = Integer.parseInt(etPrice);
+                String etDiscount = discountEt.getText().toString();
+                int discount = Integer.parseInt(etDiscount);
+                String etStock = stockEt.getText().toString();
+                int stock = Integer.parseInt(etStock);
+                String description = descEt.getText().toString();
 
                 //Insert Data to Database
-                ProductHelperClass helperClass = new ProductHelperClass();
-                reference.setValue(helperClass);
-                for(int i=0; i<4; i++){
-                    reference.child("Employee").push().setValue(true);
-                }
+                ProductHelperClass helperClass = new ProductHelperClass(key, null, description, "", product_name, price, stock, discount);
+                reference.child("PR000" + etStock).setValue(helperClass);
+
+                dialog.dismiss();
             }
         });
 
@@ -228,12 +280,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
                 String stock = stockEt.getText().toString();
                 String desc = descEt.getText().toString();
 
-                //Insert Data to Database
-                ProductHelperClass helperClass = new ProductHelperClass();
-                reference.setValue(helperClass);
-                for(int i=0; i<4; i++){
-                    reference.child("Employee").push().setValue(true);
-                }
+                //Edit Data to Database
             }
         });
 
@@ -249,7 +296,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
 
     public static class AdminProductViewholder extends RecyclerView.ViewHolder {
         TextView product_name, product_price, product_quantity;
-        Button editBtn;
+        Button editBtn, deleteBtn;
         public AdminProductViewholder(@NonNull View itemView)
         {
             super(itemView);
@@ -257,6 +304,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
             product_price = itemView.findViewById(R.id.product_price);
             product_quantity = itemView.findViewById(R.id.prduct_quantity);
             editBtn = itemView.findViewById(R.id.editBtn);
+            deleteBtn = itemView.findViewById(R.id.delete_product);
         }
     }
 
