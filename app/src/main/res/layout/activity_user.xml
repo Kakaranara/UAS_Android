@@ -56,6 +56,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/navbar_selected"
                 android:src="@drawable/white_logout"
+                android:onClick="logout"
                 style="@style/button3Navbar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

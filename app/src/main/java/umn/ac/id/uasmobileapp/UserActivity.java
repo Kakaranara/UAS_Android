@@ -1,7 +1,9 @@
 package umn.ac.id.uasmobileapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -74,5 +76,12 @@ public class UserActivity extends AppCompatActivity {
             transaction.commit();
             btnHome.setSelected(true);
         });
+    }
+
+    public void logout(View view){
+        session.logout();
+        Intent intent = new Intent(UserActivity.this,Login.class);
+        startActivity(intent);
+        finish();
     }
 }

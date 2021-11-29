@@ -104,7 +104,8 @@ public class AdminActivity extends AppCompatActivity {
     }
     public void logout(View view){
         session.logout();
-        Intent intent = new Intent(AdminActivity.this,MainActivity.class);
+        Intent intent = new Intent(AdminActivity.this,Login.class);
         startActivity(intent);
+        finish();
     }
 }
