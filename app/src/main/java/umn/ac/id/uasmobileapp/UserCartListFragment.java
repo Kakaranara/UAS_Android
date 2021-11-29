@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,19 +37,19 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.InputStream;
 
-public class UserBarangFragment extends Fragment {
+public class UserCartListFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     DatabaseReference mbase;
     FirebaseStorage storage;
     private String currentUser = "Wkwk";
 
-    public UserBarangFragment() {}
+    public UserCartListFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_user_barang, container, false);
+        view = inflater.inflate(R.layout.fragment_user_cart_list, container, false);
 
         // Create a instance of the database and get its reference
         mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
@@ -80,96 +81,68 @@ public class UserBarangFragment extends Fragment {
                 .build();
 
 
-        FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder> adapter
-                = new FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder>(options) {
+        FirebaseRecyclerAdapter<Product, UserCartListFragment.UserCartListViewholder> adapter
+                = new FirebaseRecyclerAdapter<Product, UserCartListFragment.UserCartListViewholder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull UserBarangFragment.UserProductViewholder holder, int position, @NonNull Product model) {
+            protected void onBindViewHolder(@NonNull UserCartListFragment.UserCartListViewholder holder, int position, @NonNull Product model) {
                 final String product_key = getRef(position).getKey();
                 holder.product_key.setText(product_key);
 
-                // Get product name value
-                DatabaseReference getName = getRef(position).child("product_name").getRef();
-                getName.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            String name = dataSnapshot.getValue().toString();
-                            holder.product_name.setText(name);
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                });
-
-                // Get price value
-                DatabaseReference getPrice = getRef(position).child("price").getRef();
-                getPrice.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            String price = dataSnapshot.getValue().toString();
-                            holder.product_price.setText("Rp " + price);
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                });
-
-                // Get quantity/stock value
-                DatabaseReference getStock = getRef(position).child("stock").getRef();
-                getStock.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            String stock = dataSnapshot.getValue().toString();
-                            holder.product_stock.setText("Sisa: " + stock);
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                });
-
-                // Get image path value
-                DatabaseReference getImagePath = getRef(position).child("picture_path").getRef();
-                getImagePath.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            String imagePath = dataSnapshot.getValue().toString();
-
-                            // Create a reference with an initial file path and name
-                            // Points to the root reference
-                            StorageReference storageRef = storage
-                                    .getReference()
-                                    .child("images/products/" + imagePath);
-
-                            Toast.makeText(getActivity().getApplication(), "Image path: images/products/" + imagePath, Toast.LENGTH_SHORT).show();
-
+//                // Get product name value
+//                DatabaseReference getName = getRef(position).child("product_name").getRef();
+//                getName.addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        if(dataSnapshot.exists()){
+//                            String name = dataSnapshot.getValue().toString();
+//                            holder.product_name.setText(name);
+//                        }
+//                    }
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+//                });
+//
+//                // Get image path value
+//                DatabaseReference getImagePath = getRef(position).child("picture_path").getRef();
+//                getImagePath.addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        if(dataSnapshot.exists()){
+//                            String imagePath = dataSnapshot.getValue().toString();
+//
+//                            // Create a reference with an initial file path and name
+//                            // Points to the root reference
+//                            StorageReference storageRef = storage
+//                                    .getReference()
+//                                    .child("images/products/" + imagePath);
+//
+//                            Toast.makeText(getActivity().getApplication(), "Image path: images/products/" + imagePath, Toast.LENGTH_SHORT).show();
+//
 //                            final long ONE_MEGABYTE = 1024 * 1024;
 //                            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
 //                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                Glide.with(getActivity().getApplicationContext())
-                                        .load(storageRef)
-                                        .into(holder.product_image);
+//                                Glide.with(getActivity().getApplicationContext())
+//                                        .load(storageRef)
+//                                        .into(holder.product_image);
 //                            }).addOnFailureListener(exception -> Toast.makeText(getActivity().getApplicationContext(),
 //                                    "Product picture is not found.",
 //                                    Toast.LENGTH_LONG).show());;
-
-                        } else Toast.makeText(getActivity().getApplication(), "Image path not found.", Toast.LENGTH_SHORT).show();
-
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(getActivity().getApplication(), "Image path retrieve cancelled.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+//
+//                        } else Toast.makeText(getActivity().getApplication(), "Image path not found.", Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        Toast.makeText(getActivity().getApplication(), "Image path retrieve cancelled.", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
             }
 
             @NonNull
             @Override
-            public UserBarangFragment.UserProductViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_list_user, parent, false);
-                return new UserBarangFragment.UserProductViewholder(view);
+            public UserCartListFragment.UserCartListViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_list_user, parent, false);
+                return new UserCartListFragment.UserCartListViewholder(view);
             }
         };
 
@@ -177,29 +150,30 @@ public class UserBarangFragment extends Fragment {
         adapter.startListening();
     }
 
-    public static class UserProductViewholder extends RecyclerView.ViewHolder{
-        TextView product_key, product_name, product_price, product_stock;
-        Button info_btn;
+    public static class UserCartListViewholder extends RecyclerView.ViewHolder{
+        TextView product_key, product_name, product_price, product_total_price;
+        EditText cart_qty, cart_notes;
+        Button remove_btn;
         ImageView product_image;
-        public UserProductViewholder(@NonNull View itemView) {
+        public UserCartListViewholder(@NonNull View itemView) {
             super(itemView);
-            product_key = itemView.findViewById(R.id.product_key);
-            product_name = itemView.findViewById(R.id.product_name);
-            product_price = itemView.findViewById(R.id.product_price);
-            product_stock = itemView.findViewById(R.id.product_stock);
-            product_image = itemView.findViewById(R.id.product_image);
-            info_btn = itemView.findViewById(R.id.infoBtn);
+            product_key = itemView.findViewById(R.id.key_item);
+            product_name = itemView.findViewById(R.id.nama_item);
+            product_price = itemView.findViewById(R.id.harga_item);
+            product_total_price = itemView.findViewById(R.id.price_body);
+            cart_qty = itemView.findViewById(R.id.cart_qty);
+            product_image = itemView.findViewById(R.id.product_order_image);
+            cart_notes = itemView.findViewById(R.id.footer_notes);
+            remove_btn = itemView.findViewById(R.id.footer_remove_button);
 
-            info_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mClickListener.onItemClick(v, getAdapterPosition());
-                    Toast.makeText(v.getContext(), "Click dtected on " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
-                }
+            remove_btn.setOnClickListener(v -> {
+                mClickListener.onItemClick(v, getAdapterPosition());
+                Toast.makeText(v.getContext(),"Navigating to " + product_name + " detail.",Toast.LENGTH_SHORT).show();
+//                    Intent detailIntent = new Intent(Intent.)
             });
         }
 
-        private UserProductViewholder.ClickListener mClickListener;
+        private UserCartListViewholder.ClickListener mClickListener;
 
         //Interface to send callbacks...
         public interface ClickListener{
@@ -207,10 +181,11 @@ public class UserBarangFragment extends Fragment {
             public void onItemLongClick(View view, int position);
         }
 
-        public void setOnClickListener(UserProductViewholder.ClickListener clickListener){
+        public void setOnClickListener(UserCartListViewholder.ClickListener clickListener){
             mClickListener = clickListener;
         }
     }
+
 
 
 

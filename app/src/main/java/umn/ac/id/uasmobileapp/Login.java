@@ -134,7 +134,6 @@ public class Login extends AppCompatActivity {
                         session.setLogin();
                         Toast.makeText(Login.this,"User Login Success",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, UserActivity.class);
-                        intent.putExtra("businessName", "TokkiDoki");
                         startActivity(intent);
                     } else if(passwordFromDB.equals(md5(userEnteredPassword + "admin"))){
                         loginAdmin = true;
