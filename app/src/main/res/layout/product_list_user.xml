@@ -34,9 +34,22 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Tom Yum Seafood"
+                    android:fontFamily="@font/nunito_black"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toTopOf="@id/product_price"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/product_key"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="product_key"
+                    android:textAlignment="center"
+                    android:textSize="0sp"
                     app:layout_constraintBottom_toTopOf="@id/product_price"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +61,7 @@
                     android:layout_height="wrap_content"
                     android:text="Rp 20.000"
                     android:textColor="@color/white"
+                    android:fontFamily="@font/nunito_sans_extralight"
                     app:layout_constraintBottom_toTopOf="@id/product_stock"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +73,7 @@
                     android:layout_height="18dp"
                     android:text="Sisa: 18"
                     android:textColor="@color/dark_blue"
+                    android:fontFamily="@font/nunito_sans_extralight"
                     app:layout_constraintBottom_toTopOf="@id/btnLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -75,12 +90,12 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/product_stock">
 
-                    <Button
+                    <ImageButton
                         android:id="@+id/cartBtn"
                         style="@style/buttonTransparent"
                         android:layout_width="50dp"
                         android:layout_height="35dp"
-                        android:text="C"
+                        android:src="@drawable/basket_white"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/infoBtn"
                         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -93,6 +108,7 @@
                         android:layout_height="35dp"
                         android:background="@drawable/rounded_corner_transparent"
                         android:text="INFO"
+                        android:fontFamily="@font/nunito_black"
                         android:textColor="@color/dark_blue"
                         app:backgroundTint="@null"
                         app:layout_constraintBottom_toBottomOf="parent"

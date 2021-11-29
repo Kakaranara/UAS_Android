@@ -32,7 +32,8 @@ public class UserActivity extends AppCompatActivity {
         if(savedInstanceState == null){
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.user_container_fragment, new UserBarangFragment()).commit();
+                    .replace(R.id.user_container_fragment, new UserBarangFragment())
+                    .commit();
         }
 
         btnHome = findViewById(R.id.btnHome);
