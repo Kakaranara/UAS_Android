@@ -16,6 +16,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -33,6 +34,9 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
     DatabaseReference mbase, productRef;
     private String currentUser = "BU00001";
     public Button button;
+
+    FirebaseDatabase rootNode;
+    DatabaseReference reference;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -162,6 +166,10 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                rootNode = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/");
+                reference = rootNode.getReference("business").push();
+                String key = reference.getKey();
+
                 String name = nameEt.getText().toString();
                 String price = priceEt.getText().toString();
                 String discount = discountEt.getText().toString();
@@ -169,7 +177,11 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
                 String desc = descEt.getText().toString();
 
                 //Insert Data to Database
-
+                ProductHelperClass helperClass = new ProductHelperClass();
+                reference.setValue(helperClass);
+                for(int i=0; i<4; i++){
+                    reference.child("Employee").push().setValue(true);
+                }
             }
         });
 
@@ -194,12 +206,12 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    // Function to tell the app to stop getting
-    // data from database on stopping of the activity
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        adapter.stopListening();
-    }
+//    // Function to tell the app to stop getting
+//    // data from database on stopping of the activity
+//    @Override
+//    public void onStop()
+//    {
+//        super.onStop();
+//        adapter.stopListening();
+//    }
 }
