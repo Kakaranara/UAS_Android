@@ -29,6 +29,7 @@
             android:background="@drawable/rounded_corner_home_nav"
             android:src="@drawable/green_store"
             android:padding="10dp"
+            android:contentDescription="logo pajangan"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.7"
@@ -54,6 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/button3Navbar"
+                android:contentDescription="Home"
                 android:background="@drawable/navbar_selected"
                 android:text="Home" />
 
@@ -63,6 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/button3Navbar"
+                android:contentDescription="pesanan"
                 android:background="@drawable/navbar_selected"
                 android:text="PESANAn" />
 
@@ -72,6 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/button3Navbar"
+                android:contentDescription="barang"
                 android:background="@drawable/navbar_selected"
                 android:text="Barang" />
         </LinearLayout>
@@ -85,6 +89,7 @@
             android:background="@drawable/navbar_selected"
             android:text="setting"
             style="@style/button3Navbar"
+            android:contentDescription="Setting"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -96,6 +101,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/navbar_selected"
             android:src="@drawable/white_logout"
+            android:contentDescription="logout"
             style="@style/button3Navbar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -109,6 +115,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/logo"
+        android:contentDescription="logo assistaff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight="150dp"
@@ -132,7 +139,9 @@
         app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toEndOf="@+id/navbar"
         app:layout_constraintTop_toBottomOf="@+id/logoAdmin"
-        app:layout_constraintVertical_bias="0.619" />
+        app:layout_constraintVertical_bias="0.619"
+        android:name="umn.ac.id.uasmobileapp.AdminHomeFragment"
+        tools:layout="@layout/fragment_admin_home" />
 
     <TextView
         android:id="@+id/namaBisnisAdmin"
