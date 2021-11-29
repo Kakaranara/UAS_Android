@@ -11,11 +11,14 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
     private Button loginPageBtn, btnRegisterPage;
+    Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        session = new Session(getApplicationContext());
+        System.out.println(" Testing key setelah logout " + session.getKey());
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); //no dark mode
 
 //        TEST PURPOSE: Habis run langsung masuk ke User Main Menu

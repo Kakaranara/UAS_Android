@@ -131,6 +131,7 @@ public class Login extends AppCompatActivity {
                         inputPassword.setError(null);
                         loginUser = true;
                         session.setKey(keySession);
+                        session.setLogin();
                         Toast.makeText(Login.this,"User Login Success",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, UserActivity.class);
                         intent.putExtra("businessName", "TokkiDoki");
@@ -138,6 +139,7 @@ public class Login extends AppCompatActivity {
                     } else if(passwordFromDB.equals(md5(userEnteredPassword + "admin"))){
                         loginAdmin = true;
                         session.setKey(keySession);
+                        session.setLogin();
                         Toast.makeText(Login.this, "Admin Login Success", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, AdminActivity.class);
                         intent.putExtra("businessName", dataSnapshot.child("bName").getValue(String.class));

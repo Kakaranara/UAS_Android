@@ -21,4 +21,16 @@ public class Session {
         return key;
     }
 
+    public void setLogin(){
+        prefs.edit().putBoolean("isLogin",true).commit();
+    }
+
+    public boolean getLogin(){
+        return prefs.getBoolean("isLogin",true);
+    }
+
+    public void logout(){
+        prefs.edit().clear().apply();
+    }
+
 }

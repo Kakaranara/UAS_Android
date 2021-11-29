@@ -1,6 +1,8 @@
 package umn.ac.id.uasmobileapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -99,7 +101,10 @@ public class AdminActivity extends AppCompatActivity {
             btnPesananAdmin.setSelected(false);
         });
 
-
-
+    }
+    public void logout(View view){
+        session.logout();
+        Intent intent = new Intent(AdminActivity.this,MainActivity.class);
+        startActivity(intent);
     }
 }
