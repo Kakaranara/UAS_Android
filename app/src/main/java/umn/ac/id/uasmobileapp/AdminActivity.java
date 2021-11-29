@@ -1,20 +1,13 @@
 package umn.ac.id.uasmobileapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.constraintlayout.widget.Constraints;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,7 +21,6 @@ public class AdminActivity extends AppCompatActivity {
     TextView tVnamaBisnisAdmin;
     Session session;
     String businessName;
-//    Constraints navbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +28,6 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin);
         tVnamaBisnisAdmin = findViewById(R.id.namaBisnisAdmin);
 
-        Bundle extras = getIntent().getExtras();
-//        String bName = extras.getString("businessName");
-//        tVnamaBisnisAdmin.setText(bName);
         session = new Session(getApplicationContext());
         String key = session.getKey();
         System.out.println("----------------------------- KEY : " + key);
@@ -77,8 +66,8 @@ public class AdminActivity extends AppCompatActivity {
         btnPesananAdmin = findViewById(R.id.btnPesanan);
         btnBarangAdmin = findViewById(R.id.btnBarang);
         btnBarangAdmin = findViewById(R.id.btnBarang);
-//        navbar = findViewById(R.id.navbar);
 
+        btnHome.setSelected(true);
         btnHome.setOnClickListener(view ->{
             Fragment AdminHomeFragment = new AdminHomeFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

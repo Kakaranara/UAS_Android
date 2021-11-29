@@ -1,18 +1,14 @@
 package umn.ac.id.uasmobileapp;
 
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,8 +16,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.LinkedList;
 
 public class UserActivity extends AppCompatActivity {
     ImageButton btnHome;
@@ -69,8 +63,9 @@ public class UserActivity extends AppCompatActivity {
         }
 
         btnHome = findViewById(R.id.btnHome);
-//        navbar = findViewById(R.id.navbar);
 
+        //for first selected item
+        btnHome.setSelected(true);
         btnHome.setOnClickListener(view ->{
             Fragment UserBarangFragment = new UserBarangFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
