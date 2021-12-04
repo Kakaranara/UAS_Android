@@ -12,7 +12,12 @@
         tools:layout="@layout/fragment_user_barang">
         <action
             android:id="@+id/action_userBarangFragment_to_userDetailBarangFragment2"
-            app:destination="@id/userDetailBarangFragment" />
+            app:destination="@id/userDetailBarangFragment">
+        </action>
+        <argument
+            android:name="productKey"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/userDetailBarangFragment"
@@ -21,6 +26,11 @@
         tools:layout="@layout/fragment_user_detail_barang" >
         <action
             android:id="@+id/action_userDetailBarangFragment_to_userBarangFragment"
-            app:destination="@id/userBarangFragment" />
+            app:destination="@id/userBarangFragment">
+        </action>
+        <argument
+            android:name="productKey"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>

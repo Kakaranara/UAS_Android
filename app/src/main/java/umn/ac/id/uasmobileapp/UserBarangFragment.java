@@ -223,8 +223,10 @@ public class UserBarangFragment extends Fragment {
 //                    }
                 vh.setOnClickListener((view1, position) -> {
                     Toast.makeText(view1.getContext(), "Click detected on " + vh.product_name.getText(), Toast.LENGTH_SHORT).show();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("product_key", (String) vh.product_key.getText());
                     NavHostFragment.findNavController(UserBarangFragment.this).
-                            navigate(R.id.action_userBarangFragment_to_userDetailBarangFragment2);
+                            navigate(R.id.action_userBarangFragment_to_userDetailBarangFragment2, bundle);
                 });
                 return vh;
             }
@@ -249,7 +251,6 @@ public class UserBarangFragment extends Fragment {
 
             info_btn.setOnClickListener(v -> {
                 mClickListener.onItemClick(v, getAdapterPosition());
-                Toast.makeText(v.getContext(), "Will be directed from position " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
             });
         }
 
