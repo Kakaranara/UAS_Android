@@ -22,7 +22,14 @@ public class MainActivity extends AppCompatActivity {
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); //no dark mode
 
 //        TEST PURPOSE: Habis run langsung masuk ke User Main Menu
-//        startActivity(new Intent(MainActivity.this, UserMainMenu.class));
+        Button userActivityBtn = findViewById(R.id.btnUser);
+        userActivityBtn.setOnClickListener(view -> {
+            // TEST PURPOSE: use user01@tokkidoki.com as default user
+            session.setKey("-MpaLeo0IVzYkMvkCojd");
+            session.setLogin();
+            startActivity(new Intent(MainActivity.this, UserActivity.class));
+        });
+
 
         //TEST PURPOSE : AdminActivity
 //        startActivity(new Intent(this, AdminActivity.class));

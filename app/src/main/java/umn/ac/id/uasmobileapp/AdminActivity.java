@@ -69,8 +69,7 @@ public class AdminActivity extends AppCompatActivity {
         btnBarangAdmin = findViewById(R.id.btnBarang);
         btnBarangAdmin = findViewById(R.id.btnBarang);
 
-        btnHome.setSelected(true);
-        btnHome.setOnClickListener(view ->{
+        btnHome.setSelected(true);btnHome.setOnClickListener(view ->{
             Fragment AdminHomeFragment = new AdminHomeFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -80,6 +79,7 @@ public class AdminActivity extends AppCompatActivity {
             btnBarangAdmin.setSelected(false);
             btnHome.setSelected(true);
         });
+
 
         btnPesananAdmin.setOnClickListener(view -> {
             Fragment AdminPesananFragment = new AdminPesananFragment();

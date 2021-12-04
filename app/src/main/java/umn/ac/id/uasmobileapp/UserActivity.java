@@ -25,21 +25,22 @@ public class UserActivity extends AppCompatActivity {
     TextView tvNamaBisnis, tvNamaBisnis2, tvBusinessId;
     String namaBisnis, businessId;
     Session session;
+    UserBarangFragment userBarangFragment;
 //    Constraints navbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user);
-        tvNamaBisnis = findViewById(R.id.nama_bisnis);
-        tvNamaBisnis2 = findViewById(R.id.shop_name);
-        tvBusinessId = findViewById(R.id.business_id);
         session = new Session(getApplicationContext());
+
         String key = session.getKey();
 
         DatabaseReference reference = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference("business");
         Query query = reference.orderByChild("Employee/" + key).equalTo(true);
-
+        setContentView(R.layout.activity_user);
+        tvNamaBisnis = findViewById(R.id.nama_bisnis);
+        tvNamaBisnis2 = findViewById(R.id.shop_name);
+        tvBusinessId = findViewById(R.id.business_id);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -52,18 +53,17 @@ public class UserActivity extends AppCompatActivity {
                         Toast.makeText(UserActivity.this,"Business ID KEY: " + businessId,Toast.LENGTH_SHORT).show();
                     }
                     tvNamaBisnis.setText(namaBisnis);
-                    tvNamaBisnis2.setText(namaBisnis);
                     Bundle bundle = new Bundle();
                     bundle.putString("businessId", businessId);
-                    UserBarangFragment userBarangFragment = new UserBarangFragment();
+                    userBarangFragment = new UserBarangFragment();
                     userBarangFragment.setArguments(bundle);
-
                     if(savedInstanceState == null){
                         getSupportFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.user_container_fragment, userBarangFragment)
                                 .commit();
                     }
+
                 }
                 else{
                     Log.d("Datasnapshot", "onDataChange: NULL");

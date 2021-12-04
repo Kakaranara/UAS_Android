@@ -1,6 +1,7 @@
 package umn.ac.id.uasmobileapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
@@ -9,6 +10,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,14 +42,16 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class UserBarangFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     DatabaseReference mbase;
     FirebaseStorage storage;
-    private String currentUser = "Wkwk", sessionBusinessId;
+    private String sessionBusinessId;
     FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder> adapter;
+    RecyclerView.LayoutManager mLayoutManager;
 
     public UserBarangFragment() {}
 
@@ -55,21 +61,21 @@ public class UserBarangFragment extends Fragment {
         if (bundle != null) {
             sessionBusinessId = bundle.getString("businessId", "");
         }
+        // Create a instance of the database and get its reference
+        mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
+        storage = FirebaseStorage.getInstance("gs://final-project-mobile-app-98d46.appspot.com");
+
+
+        // To display the Recycler view with two columns
+        mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 2);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_user_barang, container, false);
-
-        // Create a instance of the database and get its reference
-        mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
-        storage = FirebaseStorage.getInstance("gs://final-project-mobile-app-98d46.appspot.com");
-
         recyclerView = (RecyclerView) view.findViewById(R.id.products_recycler_view);
 
-        // To display the Recycler view with two columns
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
 
         // Add spacing between columns
@@ -100,7 +106,8 @@ public class UserBarangFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
-                            String businessId = dataSnapshot.getValue().toString();
+                            String businessId = Objects.requireNonNull(dataSnapshot.getValue()).toString();
+                            // Get product lists based on business ID in session
                             if(businessId.equals(sessionBusinessId)){
                                 final String product_key = getRef(holder.getAdapterPosition()).getKey();
                                 holder.product_key.setText(product_key);
@@ -148,17 +155,17 @@ public class UserBarangFragment extends Fragment {
                                 });
 
                                 // Get image path value
-                                DatabaseReference getImagePath = getRef(holder.getAdapterPosition()).child("picture_path").getRef();
-                                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                                StorageReference imageRef = storageRef.child("/images/products/" + getImagePath);
-//                                Toast.makeText(getActivity().getApplication(), "Image path: " + imageRef.getDownloadUrl(), Toast.LENGTH_SHORT).show();
-
-                                imageRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
-//                                    Toast.makeText(getActivity().getApplication(), "Url: " + downloadUrl, Toast.LENGTH_SHORT).show();
-                                    Glide.with(getActivity().getApplicationContext())
-                                            .load(downloadUrl)
-                                            .into(holder.product_image);
-                                });
+//                                DatabaseReference getImagePath = getRef(holder.getAdapterPosition()).child("picture_path").getRef();
+//                                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+//                                StorageReference imageRef = storageRef.child("/images/products/" + getImagePath);
+////                                Toast.makeText(getActivity().getApplication(), "Image path: " + imageRef.getDownloadUrl(), Toast.LENGTH_SHORT).show();
+//
+//                                imageRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
+////                                    Toast.makeText(getActivity().getApplication(), "Url: " + downloadUrl, Toast.LENGTH_SHORT).show();
+//                                    Glide.with(getActivity().getApplicationContext())
+//                                            .load(downloadUrl)
+//                                            .into(holder.product_image);
+//                                });
 
 //                                getImagePath.addValueEventListener(new ValueEventListener() {
 //                                    @Override
@@ -209,7 +216,17 @@ public class UserBarangFragment extends Fragment {
             @Override
             public UserBarangFragment.UserProductViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_list_user, parent, false);
-                return new UserBarangFragment.UserProductViewholder(view);
+                UserProductViewholder vh = new UserProductViewholder(view);
+                //                    @Override
+//                    public void onItemLongClick(View view, int position) {
+//                        Toast.makeText(view.getContext(), "Click dtected on " + position, Toast.LENGTH_SHORT).show();
+//                    }
+                vh.setOnClickListener((view1, position) -> {
+                    Toast.makeText(view1.getContext(), "Click detected on " + vh.product_name.getText(), Toast.LENGTH_SHORT).show();
+                    NavHostFragment.findNavController(UserBarangFragment.this).
+                            navigate(R.id.action_userBarangFragment_to_userDetailBarangFragment2);
+                });
+                return vh;
             }
         };
 
@@ -230,12 +247,9 @@ public class UserBarangFragment extends Fragment {
             product_image = itemView.findViewById(R.id.product_image);
             info_btn = itemView.findViewById(R.id.infoBtn);
 
-            info_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mClickListener.onItemClick(v, getAdapterPosition());
-                    Toast.makeText(v.getContext(), "Click dtected on " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
-                }
+            info_btn.setOnClickListener(v -> {
+                mClickListener.onItemClick(v, getAdapterPosition());
+                Toast.makeText(v.getContext(), "Will be directed from position " + getAdapterPosition(), Toast.LENGTH_SHORT).show();
             });
         }
 
@@ -244,7 +258,7 @@ public class UserBarangFragment extends Fragment {
         //Interface to send callbacks...
         public interface ClickListener{
             public void onItemClick(View view, int position);
-            public void onItemLongClick(View view, int position);
+//            public void onItemLongClick(View view, int position);
         }
 
         public void setOnClickListener(UserProductViewholder.ClickListener clickListener){
