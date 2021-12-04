@@ -3,30 +3,31 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="50dp"
-    android:layout_height="200dp"
+    android:layout_height="100dp"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="HardCodedText"
+    android:layout_marginBottom="20dp"
     android:backgroundTint="@color/dark_blue">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:weightSum="6"
+        android:weightSum="11"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/card_gambar_profile_admin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:src="@drawable/ic_launcher_foreground" />
 
         <TextView
             android:id="@+id/card_id_order_admin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:textSize="20sp"
             android:textColor="#ffffff"
             android:text="#00001"/>
@@ -35,7 +36,7 @@
             android:id="@+id/card_order_nama_makanan"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="Nasi Goreng Sapi"
             android:textColor="@color/white"
             android:textSize="20sp"/>
@@ -44,7 +45,7 @@
             android:id="@+id/card_order_harga"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:text="Rp 77.0000"/>
@@ -53,27 +54,24 @@
             android:id="@+id/card_order_status"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:text="Completed"/>
 
-        <LinearLayout
+        <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:src="@drawable/ic_launcher_foreground"
+            />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_launcher_foreground"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"/>
-        </LinearLayout>
 
     </LinearLayout>
 
