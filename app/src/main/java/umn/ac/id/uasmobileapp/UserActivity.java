@@ -22,10 +22,11 @@ import com.google.firebase.database.ValueEventListener;
 
 public class UserActivity extends AppCompatActivity {
     ImageButton btnHome;
-    TextView tvNamaBisnis, tvNamaBisnis2, tvBusinessId;
+    TextView tvNamaBisnis, tvBusinessId;
     String namaBisnis, businessId;
     Session session;
     UserBarangFragment userBarangFragment;
+    UserCartFragment userCartFragment;
 //    Constraints navbar;
 
     @Override
@@ -39,7 +40,6 @@ public class UserActivity extends AppCompatActivity {
         Query query = reference.orderByChild("Employee/" + key).equalTo(true);
         setContentView(R.layout.activity_user);
         tvNamaBisnis = findViewById(R.id.nama_bisnis);
-        tvNamaBisnis2 = findViewById(R.id.shop_name);
         tvBusinessId = findViewById(R.id.business_id);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -53,15 +53,20 @@ public class UserActivity extends AppCompatActivity {
                         Toast.makeText(UserActivity.this,"Business ID KEY: " + businessId,Toast.LENGTH_SHORT).show();
                     }
                     tvNamaBisnis.setText(namaBisnis);
-                    tvNamaBisnis2.setText(namaBisnis);
                     Bundle bundle = new Bundle();
                     bundle.putString("businessId", businessId);
+                    bundle.putString("businessName", namaBisnis);
+
                     userBarangFragment = new UserBarangFragment();
                     userBarangFragment.setArguments(bundle);
+
+                    userCartFragment = new UserCartFragment();
+                    userCartFragment.setArguments(bundle);
                     if(savedInstanceState == null){
                         getSupportFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.user_container_fragment, userBarangFragment)
+                                .replace(R.id.user_cart_fragment, userCartFragment)
                                 .commit();
                     }
 

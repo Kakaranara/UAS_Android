@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -227,13 +228,7 @@ public class UserBarangFragment extends Fragment {
 //                    public void onItemLongClick(View view, int position) {
 //                        Toast.makeText(view.getContext(), "Click dtected on " + position, Toast.LENGTH_SHORT).show();
 //                    }
-                vh.setOnClickListener((view1, position) -> {
-                    Toast.makeText(view1.getContext(), "Click detected on " + vh.product_name.getText(), Toast.LENGTH_SHORT).show();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("product_key", (String) vh.product_key.getText());
-                    NavHostFragment.findNavController(UserBarangFragment.this).
-                            navigate(R.id.action_userBarangFragment_to_userDetailBarangFragment2, bundle);
-                });
+//                vh.setOnClickListener((view1, position) -> {});
                 return vh;
             }
         };
@@ -244,7 +239,7 @@ public class UserBarangFragment extends Fragment {
 
     public static class UserProductViewholder extends RecyclerView.ViewHolder{
         TextView product_key, product_name, product_price, product_stock;
-        Button info_btn;
+        Button info_btn, cart_btn;
         ImageView product_image;
         public UserProductViewholder(@NonNull View itemView) {
             super(itemView);
@@ -254,23 +249,41 @@ public class UserBarangFragment extends Fragment {
             product_stock = itemView.findViewById(R.id.product_stock);
             product_image = itemView.findViewById(R.id.product_image);
             info_btn = itemView.findViewById(R.id.infoBtn);
+            cart_btn = itemView.findViewById(R.id.cartBtn);
 
             info_btn.setOnClickListener(v -> {
-                mClickListener.onItemClick(v, getAdapterPosition());
+//                mClickListener.onItemClick(v, getAdapterPosition());
+
+                Bundle bundle = new Bundle();
+                bundle.putString("product_key", (String) product_key.getText());
+                NavHostFragment.findNavController(FragmentManager.findFragment(v)).
+                        navigate(R.id.action_userBarangFragment_to_userDetailBarangFragment2, bundle);
+            });
+
+            cart_btn.setOnClickListener(v -> {
+                try {
+                    int stockNow = Integer.parseInt(product_stock.getText().toString());
+                    if(stockNow > 1) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("product_key", (String) product_key.getText());
+                    }
+                } catch(NumberFormatException nfe) {
+                    System.out.println("Could not parse " + nfe);
+                }
             });
         }
 
-        private UserProductViewholder.ClickListener mClickListener;
-
-        //Interface to send callbacks...
-        public interface ClickListener{
-            public void onItemClick(View view, int position);
+//        private UserProductViewholder.ClickListener mClickListener;
+//
+//        //Interface to send callbacks...
+//        public interface ClickListener{
+//            public void onItemClick(View view, int position);
 //            public void onItemLongClick(View view, int position);
-        }
+//        }
 
-        public void setOnClickListener(UserProductViewholder.ClickListener clickListener){
-            mClickListener = clickListener;
-        }
+//        public void setOnClickListener(UserProductViewholder.ClickListener clickListener){
+//            mClickListener = clickListener;
+//        }
     }
 
 

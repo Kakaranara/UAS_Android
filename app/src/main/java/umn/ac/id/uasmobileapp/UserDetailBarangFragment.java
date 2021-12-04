@@ -76,9 +76,7 @@ public class UserDetailBarangFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                throw error.toException();
-            }
+            public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
         });
 
 

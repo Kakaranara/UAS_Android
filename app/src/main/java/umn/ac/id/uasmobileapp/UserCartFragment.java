@@ -1,10 +1,6 @@
 package umn.ac.id.uasmobileapp;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Registry;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -32,37 +26,95 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
-public class UserCartListFragment extends Fragment {
+public class UserCartFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
-    DatabaseReference mbase;
-    FirebaseStorage storage;
-    private String currentUser = "Wkwk";
+    private String sessionBusinessId, sessionBusinessName, currentOrderId;
 
-    public UserCartListFragment() {}
+    FirebaseRecyclerAdapter<Cart, UserCartFragment.UserCartViewholder> adapter;
+    DatabaseReference mCarts, mOrders;
+    FirebaseStorage storage;
+    Session session;
+    Query queryOrder, queryCart;
+
+    public UserCartFragment() {}
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            sessionBusinessId = bundle.getString("businessId", "");
+            sessionBusinessName = bundle.getString("businessName", "");
+        }
+
+        session = new Session(getActivity().getApplicationContext());
+        String key = session.getKey();
+
+        // Create a instance of the database and get its reference
+        mCarts = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("carts");
+        mOrders = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("orders");
+        // Search for order where account_id equals to session user key
+        queryOrder = mOrders.orderByChild("account_id").equalTo(key);
+        queryOrder.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int dataSize = (int) snapshot.getChildrenCount();
+                for(DataSnapshot data: snapshot.getChildren()) {
+                    currentOrderId = data.getKey();
+                    String currentOrderStatus = data.child("status").getValue(String.class);
+                    System.out.println("AAAAA currentOrderId: " + currentOrderId);
+                    int i = 0;
+                    // If there's order data with status cart then clear order data
+                    if(currentOrderStatus.equals("cart")) {
+
+                        // Get cart data where account key equals to session user key
+                        queryCart = mCarts.orderByKey().equalTo(key).orderByChild("order_id").equalTo(currentOrderId);
+                        queryCart.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for(DataSnapshot data: snapshot.getChildren()) {
+                                    String productOrderId = data.child("order_id").getValue(String.class);
+                                    Toast.makeText(getActivity().getApplication(), "Found producrOrderId: " + productOrderId, Toast.LENGTH_SHORT).show();
+                                    System.out.println("FOUND!!! producrOrderId: " + productOrderId);
+                                }
+                            }
+
+                            public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
+                        });
+                    }
+                    i++;
+                    // If order with "cart" status is not found, then create new order id
+                    if (i > dataSize) {
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
+        });
+        storage = FirebaseStorage.getInstance("gs://final-project-mobile-app-98d46.appspot.com");
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_user_cart_list, container, false);
+        view = inflater.inflate(R.layout.fragment_user_cart, container, false);
 
-        // Create a instance of the database and get its reference
-        mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
-        storage = FirebaseStorage.getInstance("gs://final-project-mobile-app-98d46.appspot.com");
+        TextView tvBusinessName = view.findViewById(R.id.business_name);
+        tvBusinessName.setText(sessionBusinessName);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.products_recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.user_cart_list_recycler_view);
 
         // To display the Recycler view with two columns
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 2);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 1);
         recyclerView.setLayoutManager(mLayoutManager);
-
-        // Add spacing between columns
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 20, false));
 
         // Connecting Adapter class with the Recycler view
         return view;
@@ -75,32 +127,31 @@ public class UserCartListFragment extends Fragment {
     {
         super.onStart();
         // It is a class provide by the FirebaseUI to make a query in the database to fetch appropriate data
-        FirebaseRecyclerOptions<Product> options
-                = new FirebaseRecyclerOptions.Builder<Product>()
-                .setQuery(mbase, Product.class)
+        FirebaseRecyclerOptions<Cart> options
+                = new FirebaseRecyclerOptions.Builder<Cart>()
+                .setQuery(mCarts, Cart.class)
                 .build();
 
 
-        FirebaseRecyclerAdapter<Product, UserCartListFragment.UserCartListViewholder> adapter
-                = new FirebaseRecyclerAdapter<Product, UserCartListFragment.UserCartListViewholder>(options) {
+        adapter = new FirebaseRecyclerAdapter<Cart, UserCartFragment.UserCartViewholder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull UserCartListFragment.UserCartListViewholder holder, int position, @NonNull Product model) {
-                final String product_key = getRef(position).getKey();
-                holder.product_key.setText(product_key);
+            protected void onBindViewHolder(@NonNull UserCartFragment.UserCartViewholder holder, int position, @NonNull Cart model) {
+//                final String product_key = getRef(position).getKey();
+//                holder.product_key.setText(product_key);
 
-//                // Get product name value
-//                DatabaseReference getName = getRef(position).child("product_name").getRef();
-//                getName.addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        if(dataSnapshot.exists()){
-//                            String name = dataSnapshot.getValue().toString();
-//                            holder.product_name.setText(name);
-//                        }
-//                    }
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-//                });
+                // Get product name value
+                DatabaseReference getName = getRef(position).orderByKey().getRef();
+                getName.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            String name = dataSnapshot.getValue().toString();
+                            holder.product_name.setText(name);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { throw databaseError.toException(); }
+                });
 //
 //                // Get image path value
 //                DatabaseReference getImagePath = getRef(position).child("picture_path").getRef();
@@ -125,7 +176,7 @@ public class UserCartListFragment extends Fragment {
 //                                        .load(storageRef)
 //                                        .into(holder.product_image);
 //                            }).addOnFailureListener(exception -> Toast.makeText(getActivity().getApplicationContext(),
-//                                    "Product picture is not found.",
+//                                    "Cart picture is not found.",
 //                                    Toast.LENGTH_LONG).show());;
 //
 //                        } else Toast.makeText(getActivity().getApplication(), "Image path not found.", Toast.LENGTH_SHORT).show();
@@ -140,9 +191,9 @@ public class UserCartListFragment extends Fragment {
 
             @NonNull
             @Override
-            public UserCartListFragment.UserCartListViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            public UserCartFragment.UserCartViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_list_user, parent, false);
-                return new UserCartListFragment.UserCartListViewholder(view);
+                return new UserCartFragment.UserCartViewholder(view);
             }
         };
 
@@ -150,12 +201,12 @@ public class UserCartListFragment extends Fragment {
         adapter.startListening();
     }
 
-    public static class UserCartListViewholder extends RecyclerView.ViewHolder{
+    public static class UserCartViewholder extends RecyclerView.ViewHolder{
         TextView product_key, product_name, product_price, product_total_price;
         EditText cart_qty, cart_notes;
         Button remove_btn;
         ImageView product_image;
-        public UserCartListViewholder(@NonNull View itemView) {
+        public UserCartViewholder(@NonNull View itemView) {
             super(itemView);
             product_key = itemView.findViewById(R.id.key_item);
             product_name = itemView.findViewById(R.id.nama_item);
@@ -167,23 +218,23 @@ public class UserCartListFragment extends Fragment {
             remove_btn = itemView.findViewById(R.id.footer_remove_button);
 
             remove_btn.setOnClickListener(v -> {
-                mClickListener.onItemClick(v, getAdapterPosition());
+//                mClickListener.onItemClick(v, getAdapterPosition());
                 Toast.makeText(v.getContext(),"Navigating to " + product_name + " detail.",Toast.LENGTH_SHORT).show();
 //                    Intent detailIntent = new Intent(Intent.)
             });
         }
 
-        private UserCartListViewholder.ClickListener mClickListener;
-
-        //Interface to send callbacks...
-        public interface ClickListener{
-            public void onItemClick(View view, int position);
-            public void onItemLongClick(View view, int position);
-        }
-
-        public void setOnClickListener(UserCartListViewholder.ClickListener clickListener){
-            mClickListener = clickListener;
-        }
+//        private UserCartListViewholder.ClickListener mClickListener;
+//
+//        //Interface to send callbacks...
+//        public interface ClickListener{
+//            public void onItemClick(View view, int position);
+//            public void onItemLongClick(View view, int position);
+//        }
+//
+//        public void setOnClickListener(UserCartListViewholder.ClickListener clickListener){
+//            mClickListener = clickListener;
+//        }
     }
 
 
