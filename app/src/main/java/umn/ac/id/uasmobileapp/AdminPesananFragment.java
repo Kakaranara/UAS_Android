@@ -23,6 +23,7 @@ public class AdminPesananFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     DatabaseReference mbase, productRef;
+    Session session;
 
 
 
@@ -51,20 +52,18 @@ public class AdminPesananFragment extends Fragment {
 //    }
 //
 //    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//    }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        session = new Session(getContext());
+        System.out.println("KEY pesanan : " + session.getKey());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_admin_barang, container, false);
+        view = inflater.inflate(R.layout.fragment_admin_pesanan, container, false);
 
-        mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
+        mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("orders");
 
         recyclerView = (RecyclerView) view.findViewById(R.id.rvOrder);
 
@@ -87,9 +86,9 @@ public class AdminPesananFragment extends Fragment {
                 = new FirebaseRecyclerAdapter<Order, AdminPesananFragment.AdminPesananViewholder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull AdminPesananViewholder holder, int position, @NonNull Order model) {
-                    final String product_name = getRef(position).getKey();
+//                    final String product_name = getRef(position).getKey();
 
-                    holder.product_name.setText(product_name);
+//                    holder.product_name.setText(product_name);
 
                     //DatabaseReference getTypeRef = getRef(position).;
 
@@ -109,18 +108,18 @@ public class AdminPesananFragment extends Fragment {
     //                        });
 
                     //holder.product_quantity.setText(model.getStock());
-                    holder.editBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            //showEditDialog();
-                        }
-                    });
+//                    holder.editBtn.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            //showEditDialog();
+//                        }
+//                    });
                 }
 
                 @NonNull
                 @Override
                 public AdminPesananFragment.AdminPesananViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_list_admin, parent, false);
+                    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_pesanan, parent, false);
                     return new AdminPesananFragment.AdminPesananViewholder(view);
                 }
             };
@@ -135,10 +134,6 @@ public class AdminPesananFragment extends Fragment {
         public AdminPesananViewholder(@NonNull View itemView)
         {
             super(itemView);
-            product_name = itemView.findViewById(R.id.product_name);
-            product_price = itemView.findViewById(R.id.product_price);
-            product_quantity = itemView.findViewById(R.id.prduct_quantity);
-            editBtn = itemView.findViewById(R.id.editBtn);
         }
     }
 }
