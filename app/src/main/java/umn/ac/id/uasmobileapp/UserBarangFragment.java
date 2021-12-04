@@ -42,6 +42,9 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.Objects;
 
 public class UserBarangFragment extends Fragment {
@@ -132,8 +135,11 @@ public class UserBarangFragment extends Fragment {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         if(dataSnapshot.exists()){
-                                            String price = dataSnapshot.getValue().toString();
-                                            holder.product_price.setText("Rp " + price);
+                                            Long price = (Long) dataSnapshot.getValue();
+
+                                            // Convert long to currency format
+                                            NumberFormat formatCurrency = new DecimalFormat("#,###");
+                                            holder.product_price.setText("Rp " + formatCurrency.format(price));
                                         }
                                     }
                                     @Override

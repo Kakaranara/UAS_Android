@@ -33,7 +33,7 @@
                     android:id="@+id/product_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Tom Yum Seafood"
+                    android:text="Product Name"
                     android:fontFamily="@font/nunito_black"
                     android:textAlignment="center"
                     android:textColor="@color/white"
@@ -59,9 +59,9 @@
                     android:id="@+id/product_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rp 20.000"
+                    android:text="Rp 0"
                     android:textColor="@color/white"
-                    android:fontFamily="@font/nunito_sans_extralight"
+                    android:fontFamily="@font/nunito"
                     app:layout_constraintBottom_toTopOf="@id/product_stock"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -71,9 +71,9 @@
                     android:id="@+id/product_stock"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
-                    android:text="Sisa: 18"
+                    android:text="Sisa: 0"
                     android:textColor="@color/dark_blue"
-                    android:fontFamily="@font/nunito_sans_extralight"
+                    android:fontFamily="@font/nunito_extrabold"
                     app:layout_constraintBottom_toTopOf="@id/btnLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -90,17 +90,27 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/product_stock">
 
-                    <ImageButton
-                        android:id="@+id/cartBtn"
-                        style="@style/buttonTransparent"
-                        android:layout_width="50dp"
+                    <LinearLayout
+                        android:id="@+id/cartLayout"
+                        android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:src="@drawable/basket_white"
+                        android:padding="5dp"
+                        android:background="@drawable/rounded_corner_dark_blue"
+
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/infoBtn"
                         app:layout_constraintHorizontal_chainStyle="spread_inside"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent">
+                        <Button
+                            android:id="@+id/cartBtn"
+                            style="@style/buttonTransparent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:background="@drawable/basket_white"
+                            app:tint="@null" />
+                    </LinearLayout>
 
                     <Button
                         android:id="@+id/infoBtn"
@@ -113,7 +123,7 @@
                         app:backgroundTint="@null"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/cartBtn"
+                        app:layout_constraintStart_toEndOf="@id/cartLayout"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -53,6 +53,7 @@ public class UserActivity extends AppCompatActivity {
                         Toast.makeText(UserActivity.this,"Business ID KEY: " + businessId,Toast.LENGTH_SHORT).show();
                     }
                     tvNamaBisnis.setText(namaBisnis);
+                    tvNamaBisnis2.setText(namaBisnis);
                     Bundle bundle = new Bundle();
                     bundle.putString("businessId", businessId);
                     userBarangFragment = new UserBarangFragment();
