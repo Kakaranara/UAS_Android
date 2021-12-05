@@ -71,12 +71,13 @@
                 android:layout_height="50dp"
                 android:backgroundTint="@color/dark_blue"
                 app:cardCornerRadius="80dp">
+
                 <ImageView
+                    android:id="@+id/etAdmin_pesanan_card"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/pen_white"
+                    android:layout_height="34dp"
                     android:layout_margin="7dp"
-                    />
+                    android:src="@drawable/pen_white" />
             </androidx.cardview.widget.CardView>
         </FrameLayout>
 
