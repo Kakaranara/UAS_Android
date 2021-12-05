@@ -86,6 +86,7 @@
                 android:id="@+id/editBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="0sp"
                 android:background="@drawable/edit_btn"
                 android:layout_marginTop="10dp"/>
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,15 +34,16 @@ import java.util.UUID;
 public class AdminBarangFragment extends Fragment implements View.OnClickListener{
     private View view;
     private RecyclerView recyclerView;
-    AdminProductAdapter adapter; // Create Object of the Adapter class
+    //AdminProductAdapter adapter;
     DatabaseReference mbase, productRef;
     private String currentUser = "BU00001";
     public Button button;
     private String user_key, key, business_id;
     Session session;
+    private FirebaseRecyclerAdapter<Product, AdminProductViewholder> adapter; // Create Object of the Adapter class
 
     FirebaseDatabase rootNode;
-    DatabaseReference reference;
+    DatabaseReference reference,secRef;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -129,8 +131,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
                 .setQuery(mbase, Product.class)
                 .build();
 
-        FirebaseRecyclerAdapter<Product, AdminProductViewholder> adapter
-                = new FirebaseRecyclerAdapter<Product, AdminProductViewholder>(options) {
+        adapter = new FirebaseRecyclerAdapter<Product, AdminProductViewholder>(options) {
                     @Override
                     protected void onBindViewHolder(@NonNull AdminProductViewholder holder, int position, @NonNull Product model) {
                         DatabaseReference getBusinessId = getRef(position).child("business_id").getRef();
@@ -145,13 +146,14 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
                                     if(business_id.equals(key)){
                                         final String product_key = getRef(holder.getAdapterPosition()).getKey();
                                         holder.deleteBtn.setText(product_key);
+                                        holder.editBtn.setText(product_key);
 
                                         //Get & Show Name
                                         DatabaseReference getName = getRef(holder.getAdapterPosition()).child("product_name").getRef();
                                         getName.addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                if(dataSnapshot.exists()){
+                                                if(dataSnapshot.exists()) {
                                                     String name = dataSnapshot.getValue().toString();
                                                     holder.product_name.setText(name);
                                                 }
@@ -288,7 +290,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         dialog.show();
     }
 
-    void showEditDialog(){
+    public void showEditDialog(String product_id, int position){
         final Dialog dialog = new Dialog(getContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -302,20 +304,54 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         Button submit = dialog.findViewById(R.id.submit);
         Button cancel = dialog.findViewById(R.id.cancel);
 
+        FirebaseDatabase nodePos = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/");
+        secRef = nodePos.getReference("products").child(product_id);
+
+        secRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    nameEt.setText(dataSnapshot.child("product_name").getValue().toString());
+                    priceEt.setText(dataSnapshot.child("price").getValue().toString());
+                    discountEt.setText(dataSnapshot.child("discount").getValue().toString());
+                    stockEt.setText(dataSnapshot.child("stock").getValue().toString());
+                    descEt.setText(dataSnapshot.child("description").getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rootNode = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/");
-                reference = rootNode.getReference("business").push();
-                String key = reference.getKey();
-
                 String name = nameEt.getText().toString();
-                String price = priceEt.getText().toString();
-                String discount = discountEt.getText().toString();
-                String stock = stockEt.getText().toString();
+                String etPrice = priceEt.getText().toString();
+                int price = Integer.parseInt(etPrice);
+                String etDiscount = discountEt.getText().toString();
+                int discount = Integer.parseInt(etDiscount);
+                String etStock = stockEt.getText().toString();
+                int stock = Integer.parseInt(etStock);
                 String desc = descEt.getText().toString();
 
                 //Edit Data to Database
+                //reference.child("product_name").setValue(name);
+                //Insert Data to Database
+                ProductHelperClass helperClass = new ProductHelperClass(key, null, desc, "", name, price, stock, discount);
+                secRef.setValue(helperClass);
+
+                dialog.dismiss();
+
+//                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//                transaction.replace(R.id.adminContainerFragment, new AdminBarangFragment(),null);
+//                transaction.commit();
+
+                AdminBarangFragment fragment = new AdminBarangFragment();
+                getFragmentManager().beginTransaction().replace(R.id.adminContainerFragment, fragment).commit();
             }
         });
 
@@ -344,7 +380,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
             editBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showEditDialog();
+                    showEditDialog(editBtn.getText().toString(), getAdapterPosition());
                 }
             });
 
