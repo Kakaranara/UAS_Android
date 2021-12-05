@@ -25,33 +25,11 @@ public class AdminPesananFragment extends Fragment {
     DatabaseReference mbase, productRef;
     Session session;
 
-
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public AdminPesananFragment() {
         // Required empty public constructor
     }
 
-
-//    // TODO: Rename and change types and number of parameters
-//    public static AdminPesananFragment newInstance(String param1, String param2) {
-//        AdminPesananFragment fragment = new AdminPesananFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-//
-//    @Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         session = new Session(getContext());
@@ -86,35 +64,8 @@ public class AdminPesananFragment extends Fragment {
                 = new FirebaseRecyclerAdapter<Order, AdminPesananFragment.AdminPesananViewholder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull AdminPesananViewholder holder, int position, @NonNull Order model) {
-//                    final String product_name = getRef(position).getKey();
 
-//                    holder.product_name.setText(product_name);
-
-                    //DatabaseReference getTypeRef = getRef(position).;
-
-    //                        mbase.orderByChild("business_id").equalTo(currentUser).addValueEventListener(new ValueEventListener() {
-    //                            @Override
-    //                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-    //                                if(dataSnapshot.exists()){
-    //                                    String price = dataSnapshot.child("price").getValue().toString();
-    //                                    holder.product_price.setText(price);
-    //                                }
-    //                            }
-    //
-    //                            @Override
-    //                            public void onCancelled(@NonNull DatabaseError databaseError) {
-    //
-    //                            }
-    //                        });
-
-                    //holder.product_quantity.setText(model.getStock());
-//                    holder.editBtn.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            //showEditDialog();
-//                        }
-//                    });
-                }
+            }
 
                 @NonNull
                 @Override
