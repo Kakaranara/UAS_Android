@@ -68,10 +68,6 @@ public class UserBarangFragment extends Fragment {
         // Create a instance of the database and get its reference
         mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
         storage = FirebaseStorage.getInstance("gs://final-project-mobile-app-98d46.appspot.com");
-
-
-        // To display the Recycler view with two columns
-        mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 2);
     }
 
     @Override
@@ -80,10 +76,12 @@ public class UserBarangFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_user_barang, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.products_recycler_view);
 
+        // To display the Recycler view with two columns
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
 
         // Add spacing between columns
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 20, false));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 30, false));
 
         // Connecting Adapter class with the Recycler view
         return view;

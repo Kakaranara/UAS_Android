@@ -51,11 +51,12 @@
                 android:layout_height="match_parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/qty_layout"
-               app:layout_constraintEnd_toStartOf="@id/price_body"
+                app:layout_constraintEnd_toStartOf="@id/price_body"
                 app:layout_constraintBottom_toBottomOf="parent">
                 <ImageView
                     android:id="@+id/product_order_image"
-                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:layout_height="50dp"
                     android:layout_width="50dp"
                     android:src="@mipmap/ic_launcher"
 
@@ -67,7 +68,7 @@
                     android:id="@+id/nama_harga_item_layout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    app:layout_constraintWidth_percent=".6"
+                    app:layout_constraintWidth_percent=".7"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toEndOf="@id/product_order_image"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -91,8 +92,13 @@
                         tools:ignore="RtlCompat" />
                     <TextView
                         android:id="@+id/key_item"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="0dp"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/nunito_bold"
+                        android:text="Hwekwake"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/white"
                         app:layout_constraintBottom_toTopOf="@id/harga_item"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHeight_percent=".67"

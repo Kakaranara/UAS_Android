@@ -43,7 +43,6 @@
             android:fontFamily="@font/nunito"
             android:paddingHorizontal="20dp"
             android:paddingVertical="5dp"
-            android:text="Orders"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"

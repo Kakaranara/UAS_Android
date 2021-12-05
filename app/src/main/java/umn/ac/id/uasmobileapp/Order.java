@@ -1,9 +1,16 @@
 package umn.ac.id.uasmobileapp;
 
 public class Order {
+
+
     private String account_id, order_datetime, status;
 
     public Order(){}
+    public Order(String account_id, String order_datetime, String status){
+        this.account_id = account_id;
+        this.order_datetime = order_datetime;
+        this.status = status;
+    }
 
     public String getAccount_id() {
         return account_id;
