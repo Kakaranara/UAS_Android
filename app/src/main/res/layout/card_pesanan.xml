@@ -73,9 +73,9 @@
                 app:cardCornerRadius="80dp">
 
                 <ImageView
-                    android:id="@+id/etAdmin_pesanan_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="34dp"
+                    android:id="@+id/btnAdmin_pesanan_card"
+                    android:layout_width="32dp"
+                    android:layout_height="27dp"
                     android:layout_margin="7dp"
                     android:src="@drawable/pen_white" />
             </androidx.cardview.widget.CardView>

@@ -1,5 +1,6 @@
 package umn.ac.id.uasmobileapp;
 
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,7 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -79,12 +84,26 @@ public class AdminPesananFragment extends Fragment {
         adapter.startListening();
     }
 
-    public static class AdminPesananViewholder extends RecyclerView.ViewHolder {
+    void editDialog(){
+        final Dialog dialog = new Dialog(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.edit_order_admin);
+
+        dialog.show();
+    }
+
+    public class AdminPesananViewholder extends RecyclerView.ViewHolder {
         TextView product_name, product_price, product_quantity;
-        Button editBtn;
+        ImageView btnEdit;
+
         public AdminPesananViewholder(@NonNull View itemView)
         {
             super(itemView);
+            btnEdit = itemView.findViewById(R.id.btnAdmin_pesanan_card);
+            btnEdit.setOnClickListener(v->{
+                editDialog();
+            });
         }
     }
 }
