@@ -73,7 +73,7 @@
                 app:cardCornerRadius="80dp">
 
                 <ImageView
-                    android:id="@+id/btnAdmin_pesanan_card"
+                    android:id="@+id/btnEditAdmin_pesanan_card"
                     android:layout_width="32dp"
                     android:layout_height="27dp"
                     android:layout_margin="7dp"
@@ -95,6 +95,7 @@
                 app:cardCornerRadius="80dp">
 
                 <ImageView
+                    android:id="@+id/btnDeleteAdmin_pesanan_card"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="7dp"
