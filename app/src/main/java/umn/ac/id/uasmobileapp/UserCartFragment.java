@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,12 +48,17 @@ public class UserCartFragment extends Fragment {
     private FirebaseStorage storage;
     private Session session;
     Query queryOrder, queryCart;
+    private String newOrderId;
 
     public UserCartFragment() {}
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            sessionBusinessId = bundle.getString("businessId", "");
+            sessionBusinessName = bundle.getString("businessName", "");
+        }
 
         session = new Session(getActivity().getApplicationContext());
         currentSessionAccountId = session.getKey();
@@ -62,6 +68,85 @@ public class UserCartFragment extends Fragment {
         mOrders = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("orders");
         mProducts = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
         storage = FirebaseStorage.getInstance("gs://final-project-mobile-app-98d46.appspot.com");
+
+        // Search for order where account_id equals to session user key
+//        System.out.println("Search for order where account_id equals to " + currentSessionAccountId);
+
+        mOrders.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                // Get snapshot size
+                int dataSize = (int) snapshot.getChildrenCount();
+//                System.out.println("DATA SIZE | Snapshot size: " + dataSize);
+                boolean hasCartStatus = false;
+                for(DataSnapshot data: snapshot.getChildren()) {
+                    currentOrderId = data.getKey();
+                    String currentOrderStatus = data.child("status").getValue(String.class);
+//                    System.out.println("AAAAA currentOrderId: " + currentOrderId);
+                    // If there's order data with status cart then clear order and cart data
+                    if(currentOrderStatus.equals("cart")) {
+                        newOrderId = currentOrderId;
+
+                        hasCartStatus = true;
+//                        System.out.println("BBBBB currentOrderId has \"cart\" as status ");
+
+                        // Get cart data where account key equals to current order id
+                        Query queryCart = mCarts.orderByKey().equalTo(currentOrderId);
+                        queryCart.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                System.out.println("CCCCC Current Cart Snapshot: " + snapshot);
+
+                                Query queryCartOrderByKey = snapshot.getRef().child(currentOrderId).orderByValue();
+                                queryCartOrderByKey.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if(snapshot.exists()) {
+//                                            System.out.println("DDDDD Current OrderID " + currentOrderId + " Snapshot: " + snapshot);
+
+                                            // Remove data inside cart where order status is "cart"
+                                            String cartOrderId = snapshot.getKey();
+//                                            System.out.println("DELETING data at carts -> cartOrderId: " + cartOrderId);
+                                            snapshot.getRef().removeValue();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
+                                });
+
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
+                        });
+                    }
+
+                }
+
+                // If order with "cart" status is not found, then create new order id
+                if (!hasCartStatus) {
+                    // Create new Order iD
+                    int newOrderIndex = Integer.parseInt(currentOrderId.substring(2,6));
+//                    System.out.println("NEW ORDER INDEX IS: " + newOrderIndex);
+                    newOrderId = "OR" + String.format("%05d", newOrderIndex+1);
+//                    System.out.println("PRINTLN | New Order ID is " + newOrderId);
+
+                    // Generate datetime
+                    Date c = Calendar.getInstance().getTime();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssZ", Locale.getDefault());
+                    String formattedDate = df.format(c);
+
+                    // Write to firebase
+                    Order newOrder = new Order(currentSessionAccountId, formattedDate, "cart");
+                    mOrders.child(newOrderId).setValue(newOrder);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // ...
+            }
+        });
 
 
     }
@@ -94,20 +179,12 @@ public class UserCartFragment extends Fragment {
     public void onStart()
     {
         super.onStart();
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            sessionBusinessId = bundle.getString("businessId", "");
-            sessionBusinessName = bundle.getString("businessName", "");
-            newProductId = bundle.getString("product_key", "");
-            currentOrderId = bundle.getString("currentOrderId", "");
-        }
 
-        System.out.println("START | new Order ID: " + currentOrderId);
 
         // It is a class provide by the FirebaseUI to make a query in the database to fetch appropriate data
         FirebaseRecyclerOptions<Cart> options
                 = new FirebaseRecyclerOptions.Builder<Cart>()
-                .setQuery(mCarts.child(currentOrderId), Cart.class)
+                .setQuery(mCarts, Cart.class)
                 .build();
 
         adapter = new FirebaseRecyclerAdapter<Cart, UserCartFragment.UserCartViewholder>(options) {
@@ -116,51 +193,62 @@ public class UserCartFragment extends Fragment {
 //                final String product_key = getRef(position).getKey();
 //                holder.product_key.setText(product_key);
 
-                // Get product name value
+                System.out.println("START | new Order ID: " + newOrderId);
+                if(newOrderId != null && newOrderId.startsWith("OR")) {
+                    Bundle result = new Bundle();
+                    result.putString("order_id", newOrderId);
+                    getParentFragmentManager().setFragmentResult("requestKey", result);
+                }
                 Query getCarts = getRef(position).orderByKey();
                 getCarts.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        System.out.println("CART LIST | AAAAA | Data Snapshot: " + dataSnapshot);
+//                        System.out.println("CART LIST | AAAAA | Data Snapshot: " + dataSnapshot);
                         for(DataSnapshot data: dataSnapshot.getChildren()) {
-                            System.out.println("CART LIST | BBBBB | Product Now: " + data);
-                            String productKeyNow = data.getKey();
-                            System.out.println("CART LIST | CCCCC | Product Key Now: " + productKeyNow);
+                            if(data.child("order_id").equals(newOrderId)) {
+                                holder.cart_list_user_layout.setVisibility(View.VISIBLE);
+                                System.out.println("CART LIST | BBBBB | Product Now: " + data);
+                                String productKeyNow = data.getKey();
+//                                System.out.println("CART LIST | CCCCC | Product Key Now: " + productKeyNow);
 
-                            Query queryProduct = mProducts.orderByKey().equalTo(productKeyNow);
-                            queryProduct.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    System.out.println("CART LIST | DDDDD | Product Now: " + snapshot);
+                                Query queryProduct = mProducts.orderByKey().equalTo(productKeyNow);
+                                queryProduct.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                        System.out.println("CART LIST | DDDDD | Product Now: " + snapshot);
 
-                                    if(snapshot.exists()) {
-                                        assert productKeyNow != null;
-                                        DataSnapshot productData = snapshot.child(productKeyNow);
-                                        holder.product_name.setText(productData.child("product_name").getValue(String.class));
+                                        if(snapshot.exists()) {
+                                            assert productKeyNow != null;
+                                            DataSnapshot productData = snapshot.child(productKeyNow);
+                                            holder.product_name.setText(productData.child("product_name").getValue(String.class));
 
-                                        // Convert long to currency format
-                                        NumberFormat formatCurrency = new DecimalFormat("#,###");
-                                        holder.product_price.setText("Rp " + formatCurrency.format(productData.child("price").getValue()));
+                                            // Convert long to currency format
+                                            NumberFormat formatCurrency = new DecimalFormat("#,###");
+                                            holder.product_price.setText("Rp " + formatCurrency.format(productData.child("price").getValue()));
 
-                                        String quantity = productData.child("quantity").getValue(String.class);
-                                        if(quantity != null && !quantity.equals("")){
-                                            holder.cart_qty.setText(productData.child("quantity").getValue(String.class));
-                                            holder.product_total_price.setText(
-                                                    Integer.parseInt(snapshot.child(productKeyNow).child("price").getValue().toString()) *
-                                                            Integer.parseInt(holder.cart_qty.getText().toString()));
+                                            String quantity = productData.child("quantity").getValue(String.class);
+                                            if(quantity != null && !quantity.equals("")){
+                                                holder.cart_qty.setText(productData.child("quantity").getValue(String.class));
+                                                holder.product_total_price.setText(
+                                                        Integer.parseInt(snapshot.child(productKeyNow).child("price").getValue().toString()) *
+                                                                Integer.parseInt(holder.cart_qty.getText().toString()));
 
-                                        } else {
-                                            holder.cart_qty.setText("1");
-                                            holder.product_total_price.setText(holder.product_price.getText());
+                                            } else {
+                                                holder.cart_qty.setText("1");
+                                                holder.product_total_price.setText(holder.product_price.getText());
+                                            }
+
+
                                         }
-
-
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
-                            });
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
+                                });
+                            } else
+                                {
+                                holder.cart_list_user_layout.setVisibility(View.GONE);
+                            }
                         }
 
 //                        getCartsByProductId.addValueEventListener(new ValueEventListener() {
@@ -194,12 +282,14 @@ public class UserCartFragment extends Fragment {
     }
 
     public static class UserCartViewholder extends RecyclerView.ViewHolder{
+        LinearLayout cart_list_user_layout;
         TextView product_key, product_name, product_price, product_total_price;
         EditText cart_qty, cart_notes;
         Button remove_btn;
         ImageView product_image;
         public UserCartViewholder(@NonNull View itemView) {
             super(itemView);
+            cart_list_user_layout = itemView.findViewById(R.id.cart_list_user_layout);
             product_key = itemView.findViewById(R.id.key_item);
             product_name = itemView.findViewById(R.id.nama_item);
             product_price = itemView.findViewById(R.id.harga_item);

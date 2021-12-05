@@ -5,10 +5,13 @@ import static java.util.Objects.isNull;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,8 +52,8 @@ public class UserDetailBarangFragment extends Fragment {
         backBtn = view.findViewById(R.id.back_button);
 
         backBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), UserActivity.class);
-            startActivity(intent);
+            NavHostFragment.findNavController(FragmentManager.findFragment(view)).
+                    navigate(R.id.action_userDetailBarangFragment_to_userBarangFragment);
         });
 
         if (getArguments() != null) {
