@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -99,8 +100,12 @@ public class AdminPesananFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull AdminPesananViewholder holder, int position, @NonNull Order model) {
+
                 holder.idPesanan.setText(getRef(position).getKey());
                 holder.statusPesanan.setText(model.getStatus());
+                holder.itemView.setOnClickListener(v->{
+                    pembayaranDialog(getRef(position).getKey());
+                });
                 getRef(position).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -169,7 +174,6 @@ public class AdminPesananFragment extends Fragment {
         public AdminPesananViewholder(@NonNull View itemView) {
             super(itemView);
             btnEdit = itemView.findViewById(R.id.btnEditAdmin_pesanan_card);
-            itemView.setOnClickListener(v->pembayaranDialog());
             btnDelete = itemView.findViewById(R.id.btnDeleteAdmin_pesanan_card);
             idPesanan = itemView.findViewById(R.id.card_id_order_admin);
             statusPesanan = itemView.findViewById(R.id.card_order_status);
@@ -195,14 +199,22 @@ public class AdminPesananFragment extends Fragment {
         dialog.show();
     }
 
-    void pembayaranDialog(){
+    void pembayaranDialog(String key){
         final Dialog dialog = new Dialog(getContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
         dialog.setContentView(R.layout.fragment_admin_pembayaran);
 
+        Button submit = dialog.findViewById(R.id.confirm_payment);
+        Button edit = dialog.findViewById(R.id.cancel);
 
+        submit.setOnClickListener(v->{
+            mbase.child(key).child("status").setValue("completed");
+            Toast.makeText(getContext(), "Pembayaran Berhasil.", Toast.LENGTH_SHORT).show();
+            dialog.cancel();
+        });
 
+        edit.setOnClickListener(v->dialog.cancel());
         dialog.show();
     }
 
