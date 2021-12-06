@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/dark_blue"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/cart_list_user_layout">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

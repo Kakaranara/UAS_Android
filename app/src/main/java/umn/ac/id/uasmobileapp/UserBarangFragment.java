@@ -1,36 +1,29 @@
 package umn.ac.id.uasmobileapp;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
+import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Registry;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,24 +31,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Currency;
 import java.util.Objects;
 
 public class UserBarangFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
-    DatabaseReference mbase;
+    DatabaseReference mProducts, mCarts;
     FirebaseStorage storage;
     private String sessionBusinessId;
+    static FragmentManager fm;
+    String order_id;
     FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder> adapter;
     RecyclerView.LayoutManager mLayoutManager;
+    private LifecycleOwner lifecycle_owner;
 
     public UserBarangFragment() {}
 
@@ -66,8 +57,12 @@ public class UserBarangFragment extends Fragment {
             sessionBusinessId = bundle.getString("businessId", "");
         }
         // Create a instance of the database and get its reference
-        mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
+        mProducts = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
+        mCarts = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("carts");
+
         storage = FirebaseStorage.getInstance("gs://final-project-mobile-app-98d46.appspot.com");
+
+
     }
 
     @Override
@@ -75,6 +70,15 @@ public class UserBarangFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_user_barang, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.products_recycler_view);
+        lifecycle_owner = getViewLifecycleOwner();
+        fm = getParentFragmentManager();
+
+        fm.setFragmentResultListener("requestKey", lifecycle_owner,
+                (requestKey, bundle1) -> {
+                    // We use a String here, but any type that can be put in a Bundle is supported
+                    order_id = bundle1.getString("order_id");
+                    System.out.println("INPUTTING TO CART | Order ID is " + order_id);
+                });
 
         // To display the Recycler view with two columns
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 2);
@@ -93,14 +97,19 @@ public class UserBarangFragment extends Fragment {
     public void onStart()
     {
         super.onStart();
+
+//        DatabaseReference adapterQuery = mProducts.orderByKey().getRef();
+
         // It is a class provide by the FirebaseUI to make a query in the database to fetch appropriate data
         FirebaseRecyclerOptions<Product> options
                 = new FirebaseRecyclerOptions.Builder<Product>()
-                .setQuery(mbase, Product.class)
+                .setQuery(mProducts, Product.class)
                 .build();
 
 
         adapter = new FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder>(options) {
+
+
             @Override
             protected void onBindViewHolder(@NonNull UserBarangFragment.UserProductViewholder holder, int position, @NonNull Product model) {
                 DatabaseReference getBusinessId = getRef(position).child("business_id").getRef();
@@ -111,6 +120,9 @@ public class UserBarangFragment extends Fragment {
                             String businessId = Objects.requireNonNull(dataSnapshot.getValue()).toString();
                             // Get product lists based on business ID in session
                             if(businessId.equals(sessionBusinessId)){
+                                holder.product_list_linear_layout.setVisibility(View.VISIBLE);
+
+//                                System.out.println("HASIL QUERY BARANG FRAGMENT: " + getRef(holder.getAdapterPosition()));
                                 final String product_key = getRef(holder.getAdapterPosition()).getKey();
                                 holder.product_key.setText(product_key);
 
@@ -205,8 +217,11 @@ public class UserBarangFragment extends Fragment {
 //                                        Toast.makeText(getActivity().getApplication(), "Image path retrieve cancelled.", Toast.LENGTH_SHORT).show();
 //                                    }
 //                                });
-                            } else
-                                Toast.makeText(getActivity().getApplicationContext(), businessId + " " + sessionBusinessId,Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                holder.product_list_linear_layout.setVisibility(View.GONE);
+                            }
 
                         }
                     }
@@ -235,12 +250,14 @@ public class UserBarangFragment extends Fragment {
         adapter.startListening();
     }
 
-    public static class UserProductViewholder extends RecyclerView.ViewHolder{
+    public class UserProductViewholder extends RecyclerView.ViewHolder{
         TextView product_key, product_name, product_price, product_stock;
+        LinearLayout product_list_linear_layout;
         Button info_btn, cart_btn;
         ImageView product_image;
         public UserProductViewholder(@NonNull View itemView) {
             super(itemView);
+            product_list_linear_layout = itemView.findViewById(R.id.product_list_linear_layout);
             product_key = itemView.findViewById(R.id.product_key);
             product_name = itemView.findViewById(R.id.product_name);
             product_price = itemView.findViewById(R.id.product_price);
@@ -258,12 +275,62 @@ public class UserBarangFragment extends Fragment {
                         navigate(R.id.action_userBarangFragment_to_userDetailBarangFragment2, bundle);
             });
 
+            product_key.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if(order_id != null) {
+                        String product_key_now = product_key.getText().toString();
+                        mCarts.child(order_id).child(product_key_now).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    cart_btn.setVisibility(View.INVISIBLE);
+                                    cart_btn.setEnabled(false);
+                                } else {
+                                    cart_btn.setVisibility(View.VISIBLE);
+                                    cart_btn.setEnabled(true);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
+                        });
+                    }
+                }
+            });
+
             cart_btn.setOnClickListener(v -> {
                 try {
-                    int stockNow = Integer.parseInt(product_stock.getText().toString());
+                    int stockNow = Integer.parseInt(product_stock.getText().toString().substring(6));
                     if(stockNow > 1) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("product_key", (String) product_key.getText());
+                        if(order_id != null) {
+                            Cart newCart = new Cart(
+                                    "-",
+                                    Integer.parseInt(product_price.getText().toString()
+                                            .replace("Rp ", "")
+                                            .replace(",", "")),
+                                    1);
+                            String product_key_now = product_key.getText().toString();
+                            System.out.println("PRODUCT ID: " + product_key_now + " | StOCK NOW: " + stockNow);
+
+                            mCarts.child(order_id).child(product_key_now).setValue(newCart);
+                            cart_btn.setEnabled(false);
+                            cart_btn.setVisibility(View.INVISIBLE);
+                        } else {
+                            cart_btn.setEnabled(true);
+                            cart_btn.setVisibility(View.VISIBLE);
+                        }
                     }
                 } catch(NumberFormatException nfe) {
                     System.out.println("Could not parse " + nfe);
