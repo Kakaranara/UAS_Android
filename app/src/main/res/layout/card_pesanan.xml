@@ -89,13 +89,13 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/btnDeleteAdmin_pesanan_card"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:backgroundTint="@color/red"
                 app:cardCornerRadius="80dp">
 
                 <ImageView
-                    android:id="@+id/btnDeleteAdmin_pesanan_card"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="7dp"

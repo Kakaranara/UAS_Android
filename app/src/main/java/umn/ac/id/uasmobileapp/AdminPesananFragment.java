@@ -175,8 +175,7 @@ public class AdminPesananFragment extends Fragment {
     }
 
     public class AdminPesananViewholder extends RecyclerView.ViewHolder {
-        ImageView btnDelete;
-        CardView btnEdit;
+        CardView btnEdit,btnDelete;
         TextView idPesanan,statusPesanan,namaMenu,hargaTotal;
 
         public AdminPesananViewholder(@NonNull View itemView) {
@@ -189,6 +188,24 @@ public class AdminPesananFragment extends Fragment {
             hargaTotal = itemView.findViewById(R.id.card_order_harga);
             btnEdit.setOnClickListener(v->{
                 editDialog();
+            });
+            btnDelete.setOnClickListener(v->{
+                adapter.getRef(getAdapterPosition()).removeValue();
+                String key = adapter.getRef(getAdapterPosition()).getKey();
+                cartRef.orderByKey().equalTo(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot cartSnapshot: snapshot.getChildren()){
+                            cartSnapshot.getRef().removeValue();
+                            break;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             });
 
         }
