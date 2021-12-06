@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -281,8 +283,8 @@ public class UserCartFragment extends Fragment {
 
     public static class UserCartViewholder extends RecyclerView.ViewHolder{
         LinearLayout cart_list_user_layout;
-        TextView product_key, product_name, product_price, product_total_price;
-        EditText cart_qty, cart_notes;
+        TextView product_key, product_name, product_price, product_total_price, cart_qty;
+        EditText cart_notes;
         Button remove_btn;
         ImageView product_image;
         public UserCartViewholder(@NonNull View itemView) {
@@ -297,15 +299,28 @@ public class UserCartFragment extends Fragment {
             cart_notes = itemView.findViewById(R.id.footer_notes);
             remove_btn = itemView.findViewById(R.id.footer_remove_button);
 
+
+
             remove_btn.setOnClickListener(v -> {
-//                mClickListener.onItemClick(v, getAdapterPosition());
-                Toast.makeText(v.getContext(),"Navigating to " + product_name + " detail.",Toast.LENGTH_SHORT).show();
-//                    Intent detailIntent = new Intent(Intent.)
+                Toast.makeText(v.getContext(), "Deleting " + product_name.getText().toString() + " from cart.", Toast.LENGTH_SHORT).show();
+                mCarts.child(orderIdForViewHolder).child(product_key.getText().toString()).removeValue();
+                cart_list_user_layout.setVisibility(View.VISIBLE);
+                cart_list_user_layout.setEnabled(true);
             });
 
-            product_key.addTextChangedListener(new TextWatcher() {
+//            cart_qty.setOnEditorActionListener((v, actionId, event) -> {
+//                boolean handled = false;
+//                if (actionId == EditorInfo.IME_ACTION_DONE) {
+//                    mCarts.child(orderIdForViewHolder)
+//                            .child(product_key.getText().toString() + "/quantity")
+//                            .setValue(Integer.parseInt(cart_qty.getText().toString()));
+//                }
+//                return handled;
+//            });
 
-                @Override
+           product_key.addTextChangedListener(new TextWatcher() {
+
+                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     if(orderIdForViewHolder.equals(tvOrderId.getText())) {
                         String product_key_now = product_key.getText().toString();
