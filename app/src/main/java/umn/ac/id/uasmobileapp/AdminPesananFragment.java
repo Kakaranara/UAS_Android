@@ -1,6 +1,8 @@
 package umn.ac.id.uasmobileapp;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -230,9 +232,19 @@ public class AdminPesananFragment extends Fragment {
         });
 
         submit.setOnClickListener(v->{
-            mbase.child(key).child("status").setValue("completed");
-            Toast.makeText(getContext(), "Pembayaran Berhasil.", Toast.LENGTH_SHORT).show();
-            dialog.cancel();
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Payment Confirmation")
+                    .setMessage("Confirm payment?")
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mbase.child(key).child("status").setValue("completed");
+                            Toast.makeText(getContext(), "Pembayaran Berhasil.", Toast.LENGTH_SHORT).show();
+                            dialog.cancel();
+                        }
+                    })
+                    .setNegativeButton(R.string.no, null).show();
+
         });
 
         edit.setOnClickListener(v->dialog.cancel());
