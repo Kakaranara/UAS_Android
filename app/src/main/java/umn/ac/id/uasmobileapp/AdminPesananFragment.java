@@ -103,9 +103,8 @@ public class AdminPesananFragment extends Fragment {
 
                 holder.idPesanan.setText(getRef(position).getKey());
                 holder.statusPesanan.setText(model.getStatus());
-                holder.itemView.setOnClickListener(v->{
-                    pembayaranDialog(getRef(position).getKey());
-                });
+                holder.itemView.setOnClickListener(v->pembayaranDialog(getRef(position).getKey()));
+
                 getRef(position).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -135,6 +134,7 @@ public class AdminPesananFragment extends Fragment {
                                             });
                                         }
                                         holder.hargaTotal.setText("Rp. " + harga_total );
+
                                     }
                                 }
 
@@ -207,6 +207,27 @@ public class AdminPesananFragment extends Fragment {
 
         Button submit = dialog.findViewById(R.id.confirm_payment);
         Button edit = dialog.findViewById(R.id.cancel);
+        EditText purchaser = dialog.findViewById(R.id.purchaser_name);
+        EditText phoneNumber = dialog.findViewById(R.id.phone_number);
+        TextView totalPrice = dialog.findViewById(R.id.total_price);
+
+        cartRef.orderByKey().equalTo(key).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot orderSnapshot: snapshot.getChildren()){
+                    int harga_total = 0;
+                    for(DataSnapshot productSnapshot : orderSnapshot.getChildren()){
+                        harga_total += productSnapshot.child("price").getValue(Integer.class);
+                    }
+                    totalPrice.setText("Rp. " + harga_total);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         submit.setOnClickListener(v->{
             mbase.child(key).child("status").setValue("completed");
