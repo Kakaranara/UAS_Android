@@ -37,6 +37,7 @@ public class AdminPesananFragment extends Fragment {
     DatabaseReference mbase, productRef, reference,cartRef;
     Session session;
     ArrayList<Pesanan> listPesanan;
+    FirebaseRecyclerAdapter<Order, AdminPesananFragment.AdminPesananViewholder> adapter;
 
     private String orderID;
     private String[] menu;
@@ -85,8 +86,8 @@ public class AdminPesananFragment extends Fragment {
                 .setQuery(mbaseQuery, Order.class)
                 .build();
 
-        FirebaseRecyclerAdapter<Order, AdminPesananFragment.AdminPesananViewholder> adapter
-                = new FirebaseRecyclerAdapter<Order, AdminPesananFragment.AdminPesananViewholder>(options) {
+
+                adapter = new FirebaseRecyclerAdapter<Order, AdminPesananFragment.AdminPesananViewholder>(options) {
 
             @Override
             public void onDataChanged() {
@@ -216,4 +217,10 @@ public class AdminPesananFragment extends Fragment {
         dialog.show();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
+
+    }
 }
