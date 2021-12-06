@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 
@@ -18,9 +19,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         session = new Session(getApplicationContext());
+
         System.out.println(" Testing key setelah logout " + session.getKey());
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); //no dark mode
-
 //        TEST PURPOSE: Habis run langsung masuk ke User Main Menu
         Button userActivityBtn = findViewById(R.id.btnUser);
         userActivityBtn.setOnClickListener(view -> {
