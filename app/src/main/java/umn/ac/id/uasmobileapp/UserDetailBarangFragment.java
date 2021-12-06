@@ -11,6 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
@@ -52,8 +55,16 @@ public class UserDetailBarangFragment extends Fragment {
         backBtn = view.findViewById(R.id.back_button);
 
         backBtn.setOnClickListener(view -> {
-            NavHostFragment.findNavController(FragmentManager.findFragment(view)).
-                    navigate(R.id.action_userDetailBarangFragment_to_userBarangFragment);
+//            NavHostFragment.findNavController(FragmentManager.findFragment(view)).
+//                    navigate(R.id.action_userDetailBarangFragment_to_userBarangFragment);
+            Fragment fragment = new UserBarangFragment();
+            FragmentTransaction fragmentTransaction = getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.user_container_fragment, fragment)
+                    .detach(fragment)
+                    .attach(fragment)
+                    .addToBackStack(null);
+            fragmentTransaction.commit();
         });
 
         if (getArguments() != null) {

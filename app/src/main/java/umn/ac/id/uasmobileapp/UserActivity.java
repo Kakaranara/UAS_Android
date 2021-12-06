@@ -91,23 +91,6 @@ public class UserActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
-        btnHome = findViewById(R.id.btnHome);
-
-        //for first selected item
-        btnHome.setSelected(true);
-        btnHome.setOnClickListener(view ->{
-            Fragment UserBarangFragment = new UserBarangFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-            transaction.replace(R.id.user_container_fragment, UserBarangFragment,null);
-            transaction.commit();
-            btnHome.setSelected(true);
-        });
     }
 
     public void logout(View view){

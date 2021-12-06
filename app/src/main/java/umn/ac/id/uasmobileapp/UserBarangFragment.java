@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,89 +88,29 @@ public class UserBarangFragment extends Fragment {
         // Add spacing between columns
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, 30, false));
 
-        // Connecting Adapter class with the Recycler view
-        return view;
-    }
-
-    // Function to tell the app to start getting
-    // data from database on starting of the activity
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-//        DatabaseReference adapterQuery = mProducts.orderByKey().getRef();
-
         // It is a class provide by the FirebaseUI to make a query in the database to fetch appropriate data
         FirebaseRecyclerOptions<Product> options
                 = new FirebaseRecyclerOptions.Builder<Product>()
-                .setQuery(mProducts, Product.class)
+                .setQuery(mProducts.orderByChild("business_id").equalTo(sessionBusinessId), Product.class)
                 .build();
 
-
         adapter = new FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder>(options) {
-
-
             @Override
             protected void onBindViewHolder(@NonNull UserBarangFragment.UserProductViewholder holder, int position, @NonNull Product model) {
-                DatabaseReference getBusinessId = getRef(position).child("business_id").getRef();
-                getBusinessId.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            String businessId = Objects.requireNonNull(dataSnapshot.getValue()).toString();
-                            // Get product lists based on business ID in session
-                            if(businessId.equals(sessionBusinessId)){
-                                holder.product_list_linear_layout.setVisibility(View.VISIBLE);
+                Log.d("FIREBASE User Barang", String.valueOf(getRef(position).getKey()));
 
-//                                System.out.println("HASIL QUERY BARANG FRAGMENT: " + getRef(holder.getAdapterPosition()));
-                                final String product_key = getRef(holder.getAdapterPosition()).getKey();
+                                final String product_key = getRef(position).getKey();
                                 holder.product_key.setText(product_key);
 
                                 // Get product name value
-                                DatabaseReference getName = getRef(holder.getAdapterPosition()).child("product_name").getRef();
-                                getName.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if(dataSnapshot.exists()){
-                                            String name = dataSnapshot.getValue().toString();
-                                            holder.product_name.setText(name);
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                                });
+                                holder.product_name.setText(model.getProduct_name());
 
                                 // Get price value
-                                DatabaseReference getPrice = getRef(holder.getAdapterPosition()).child("price").getRef();
-                                getPrice.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if(dataSnapshot.exists()){
-                                            Long price = (Long) dataSnapshot.getValue();
-
-                                            // Convert long to currency format
-                                            NumberFormat formatCurrency = new DecimalFormat("#,###");
-                                            holder.product_price.setText("Rp " + formatCurrency.format(price));
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                                });
+                                NumberFormat formatCurrency = new DecimalFormat("#,###");
+                                holder.product_price.setText("Rp " + formatCurrency.format(model.getPrice()));
 
                                 // Get quantity/stock value
-                                DatabaseReference getStock = getRef(holder.getAdapterPosition()).child("stock").getRef();
-                                getStock.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if(dataSnapshot.exists()){
-                                            String stock = dataSnapshot.getValue().toString();
-                                            holder.product_stock.setText("Sisa: " + stock);
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                                });
+                                holder.product_stock.setText("Sisa: " + model.getStock());
 
                                 // Get image path value
 //                                DatabaseReference getImagePath = getRef(holder.getAdapterPosition()).child("picture_path").getRef();
@@ -217,17 +158,6 @@ public class UserBarangFragment extends Fragment {
 //                                        Toast.makeText(getActivity().getApplication(), "Image path retrieve cancelled.", Toast.LENGTH_SHORT).show();
 //                                    }
 //                                });
-                            }
-                            else
-                            {
-                                holder.product_list_linear_layout.setVisibility(View.GONE);
-                            }
-
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                });
 
 
             }
@@ -246,8 +176,19 @@ public class UserBarangFragment extends Fragment {
             }
         };
 
-        recyclerView.setAdapter(adapter);
-        adapter.startListening();
+                    recyclerView.setAdapter(adapter);
+                    adapter.startListening();
+
+        // Connecting Adapter class with the Recycler view
+        return view;
+    }
+
+    // Function to tell the app to start getting
+    // data from database on starting of the activity
+    @Override
+    public void onStart()
+    {
+        super.onStart();
     }
 
     public class UserProductViewholder extends RecyclerView.ViewHolder{
@@ -270,7 +211,7 @@ public class UserBarangFragment extends Fragment {
 //                mClickListener.onItemClick(v, getAdapterPosition());
 
                 Bundle bundle = new Bundle();
-                bundle.putString("product_key", (String) product_key.getText());
+                bundle.putString("product_key", product_key.getText().toString());
                 NavHostFragment.findNavController(FragmentManager.findFragment(v)).
                         navigate(R.id.action_userBarangFragment_to_userDetailBarangFragment2, bundle);
             });
@@ -279,7 +220,8 @@ public class UserBarangFragment extends Fragment {
 
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                    cart_btn.setVisibility(View.VISIBLE);
+                    cart_btn.setEnabled(true);
                 }
 
                 @Override
@@ -289,12 +231,15 @@ public class UserBarangFragment extends Fragment {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if(order_id != null) {
+                    if (order_id != null) {
                         String product_key_now = product_key.getText().toString();
-                        mCarts.child(order_id).child(product_key_now).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
+                        mCarts.child(order_id).child(product_key_now).get().addOnCompleteListener(task -> {
+                            if (!task.isSuccessful()) {
+                                Log.e("FIREBASE User Cart Button", "Error getting data", task.getException());
+                            } else {
+                                Log.e("FIREBASE User Cart Button", String.valueOf(task.getResult().getValue()));
+
+                                if (task.getResult().getValue() != null) {
                                     cart_btn.setVisibility(View.INVISIBLE);
                                     cart_btn.setEnabled(false);
                                 } else {
@@ -303,9 +248,8 @@ public class UserBarangFragment extends Fragment {
                                 }
                             }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
                         });
+
                     }
                 }
             });
@@ -359,6 +303,11 @@ public class UserBarangFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        adapter.stopListening();
+    }
+
+    @Override public void onDestroyView() {
+        super.onDestroyView();
         adapter.stopListening();
     }
 

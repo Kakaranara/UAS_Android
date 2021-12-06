@@ -6,6 +6,23 @@ public class Product {
     private String description;
     private String picture_path;
     private String category;
+
+    public String getBusiness_id() {
+        return business_id;
+    }
+
+    public void setBusiness_id(String business_id) {
+        this.business_id = business_id;
+    }
+
+    public String getProduct_name() {
+        return product_name;
+    }
+
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
+    }
+
     private Integer price, stock, discount;
 
     public String getCategory() {
@@ -20,20 +37,6 @@ public class Product {
     public Product(){}
 
 //    STRINGS
-    public String getBusinessId() {
-        return business_id;
-    }
-    public void setBusinessId(String businessId) {
-        this.business_id = businessId;
-    }
-
-    public String getProdName() {
-        return product_name;
-    }
-    public void setProdName(String prodName) {
-        this.product_name = prodName;
-    }
-
     public String getDescription() {
         return description;
     }

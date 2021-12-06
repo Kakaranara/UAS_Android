@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,11 +46,16 @@ public class UserCartFragment extends Fragment {
     private String sessionBusinessId, sessionBusinessName, currentOrderId, newProductId, currentSessionAccountId;
 
     private FirebaseRecyclerAdapter<Cart, UserCartFragment.UserCartViewholder> adapter;
-    private DatabaseReference mCarts, mOrders, mProducts;
+    private static DatabaseReference mCarts;
+    private DatabaseReference mOrders;
+    private DatabaseReference mProducts;
     private FirebaseStorage storage;
     private Session session;
     Query queryOrder, queryCart;
     private String newOrderId;
+    static String orderIdForViewHolder;
+    static TextView tvOrderId;
+    boolean orderIdSet;
 
     public UserCartFragment() {}
 
@@ -69,41 +76,80 @@ public class UserCartFragment extends Fragment {
         mProducts = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
         storage = FirebaseStorage.getInstance("gs://final-project-mobile-app-98d46.appspot.com");
 
+
+
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_user_cart, container, false);
+
+        // Set current order ID to view
+        tvOrderId = view.findViewById(R.id.order_id);
+
+        TextView tvBusinessName = view.findViewById(R.id.business_name);
+        tvBusinessName.setText(sessionBusinessName);
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.user_cart_list_recycler_view);
+
+        // To display the Recycler view with two columns
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 1);
+        recyclerView.setLayoutManager(mLayoutManager);
+
+        // Connecting Adapter class with the Recycler view
+        return view;
+    }
+
+    // Function to tell the app to start getting
+    // data from database on starting of the activity
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
         // Search for order where account_id equals to session user key
 //        System.out.println("Search for order where account_id equals to " + currentSessionAccountId);
 
-        mOrders.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
+        mOrders.orderByKey().get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.e("FIREBASE User Cart", "Error getting data", task.getException());
+            }
+            else {
+                Log.d("FIREBASE User Cart", String.valueOf(task.getResult().getValue()));
+
                 boolean hasCartStatus = false;
+
+                DataSnapshot snapshot = task.getResult();
 
                 for(DataSnapshot data: snapshot.getChildren()) {
                     currentOrderId = data.getKey();
                     String currentOrderStatus = data.child("status").getValue(String.class);
-                    System.out.println("AAAAA currentOrderId: " + currentOrderId);
+//                    System.out.println("AAAAA currentOrderId: " + currentOrderId);
                     // If there's order data with status cart then clear order and cart data
                     if(currentOrderStatus.equals("cart")) {
                         newOrderId = currentOrderId;
 
                         hasCartStatus = true;
-                        System.out.println("BBBBB currentOrderId has \"cart\" as status ");
+//                        System.out.println("BBBBB currentOrderId has \"cart\" as status ");
 
                         // Get cart data where account key equals to current order id
                         Query queryCart = mCarts.orderByKey().equalTo(currentOrderId);
                         queryCart.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                System.out.println("CCCCC Current Cart Snapshot: " + snapshot);
+//                                System.out.println("CCCCC Current Cart Snapshot: " + snapshot);
 
                                 Query queryCartOrderByKey = snapshot.getRef().child(currentOrderId).orderByValue();
                                 queryCartOrderByKey.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         if(snapshot.exists()) {
-                                            System.out.println("DDDDD Current OrderID " + currentOrderId + " Snapshot: " + snapshot);
+//                                            System.out.println("DDDDD Current OrderID " + currentOrderId + " Snapshot: " + snapshot);
 
                                             // Remove data inside cart where order status is "cart"
-                                            String cartOrderId = snapshot.getKey();
+//                                            String cartOrderId = snapshot.getKey();
 //                                            System.out.println("DELETING data at carts -> cartOrderId: " + cartOrderId);
                                             snapshot.getRef().removeValue();
                                         }
@@ -127,7 +173,7 @@ public class UserCartFragment extends Fragment {
                     int newOrderIndex = Integer.parseInt(currentOrderId.substring(2,6));
 //                    System.out.println("NEW ORDER INDEX IS: " + newOrderIndex);
                     newOrderId = "OR" + String.format("%05d", newOrderIndex+1);
-                    System.out.println("PRINTLN | New Order ID is " + newOrderId);
+//                    System.out.println("PRINTLN | New Order ID is " + newOrderId);
 
                     // Generate datetime
                     Date c = Calendar.getInstance().getTime();
@@ -138,73 +184,32 @@ public class UserCartFragment extends Fragment {
                     Order newOrder = new Order(currentSessionAccountId, formattedDate, "cart");
                     mOrders.child(newOrderId).setValue(newOrder);
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) { throw databaseError.toException();}
-        });
-
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_user_cart, container, false);
-
-        // Set current order ID to view
-        TextView tvOrderId = view.findViewById(R.id.order_id);
-        tvOrderId.setText(currentOrderId);
-
-        TextView tvBusinessName = view.findViewById(R.id.business_name);
-        tvBusinessName.setText(sessionBusinessName);
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.user_cart_list_recycler_view);
-
-        // To display the Recycler view with two columns
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity().getApplicationContext(), 1);
-        recyclerView.setLayoutManager(mLayoutManager);
-
-        // Connecting Adapter class with the Recycler view
-        return view;
-    }
-
-    // Function to tell the app to start getting
-    // data from database on starting of the activity
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-
-        // It is a class provide by the FirebaseUI to make a query in the database to fetch appropriate data
-        FirebaseRecyclerOptions<Cart> options
-                = new FirebaseRecyclerOptions.Builder<Cart>()
-                .setQuery(mCarts, Cart.class)
-                .build();
-
-        adapter = new FirebaseRecyclerAdapter<Cart, UserCartFragment.UserCartViewholder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull UserCartFragment.UserCartViewholder holder, int position, @NonNull Cart model) {
-//                final String product_key = getRef(position).getKey();
-//                holder.product_key.setText(product_key);
-
-                System.out.println("START | new Order ID: " + newOrderId);
+//                System.out.println("START | new Order ID: " + newOrderId);
                 if(newOrderId != null && newOrderId.startsWith("OR")) {
                     Bundle result = new Bundle();
                     result.putString("order_id", newOrderId);
                     getParentFragmentManager().setFragmentResult("requestKey", result);
+                    orderIdForViewHolder = newOrderId;
+                    tvOrderId.setText(newOrderId);
                 }
-                Query getCarts = getRef(position).orderByKey();
-                getCarts.addValueEventListener(new ValueEventListener() {
+
+                // It is a class provide by the FirebaseUI to make a query in the database to fetch appropriate data
+                FirebaseRecyclerOptions<Cart> options
+                        = new FirebaseRecyclerOptions.Builder<Cart>()
+                        .setQuery(mCarts.child(newOrderId), Cart.class)
+                        .build();
+
+                adapter = new FirebaseRecyclerAdapter<Cart, UserCartViewholder>(options) {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        System.out.println("CART LIST | AAAAA | Data Snapshot: " + dataSnapshot);
-                        String dataKeyNow = dataSnapshot.getKey();
-                        for(DataSnapshot data: dataSnapshot.getChildren()) {
-                            if(dataKeyNow.equals(newOrderId)) {
-                                holder.cart_list_user_layout.setVisibility(View.VISIBLE);
-                                System.out.println("CART LIST | BBBBB | Product Now: " + data);
+                    protected void onBindViewHolder(@NonNull UserCartViewholder holder, int position, @NonNull Cart model) {
+//                final String product_key = getRef(position).getKey();
+//                holder.product_key.setText(product_key);
+
+
+//                                System.out.println("CART LIST | AAAAA | Data Snapshot: " + getRef(position));
+                                DatabaseReference data = getRef(position);
+//                                System.out.println("CART LIST | BBBBB | Product Now: " + data);
                                 String productKeyNow = data.getKey();
 //                                System.out.println("CART LIST | CCCCC | Product Key Now: " + productKeyNow);
 
@@ -212,41 +217,36 @@ public class UserCartFragment extends Fragment {
                                 queryProduct.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                        System.out.println("CART LIST | DDDDD | Product Now: " + snapshot);
-
+                                        System.out.println("CART LIST | DDDDD | Product Now: " + snapshot);
                                         if(snapshot.exists()) {
                                             assert productKeyNow != null;
                                             DataSnapshot productData = snapshot.child(productKeyNow);
-                                            holder.product_name.setText(productData.child("product_name").getValue(String.class));
+                                                    holder.product_name.setText(productData.child("product_name").getValue(String.class));
 
-                                            // Convert long to currency format
-                                            NumberFormat formatCurrency = new DecimalFormat("#,###");
-                                            holder.product_price.setText("Rp " + formatCurrency.format(productData.child("price").getValue()));
+                                                    // Convert long to currency format
+                                                    NumberFormat formatCurrency = new DecimalFormat("#,###");
+                                                    holder.product_price.setText("Rp " + formatCurrency.format(productData.child("price").getValue()));
 
-                                            String quantity = productData.child("quantity").getValue(String.class);
-                                            if(quantity != null && !quantity.equals("")){
-                                                holder.cart_qty.setText(productData.child("quantity").getValue(String.class));
-                                                holder.product_total_price.setText(
-                                                        Integer.parseInt(snapshot.child(productKeyNow).child("price").getValue().toString()) *
-                                                                Integer.parseInt(holder.cart_qty.getText().toString()));
+                                                    String quantity = productData.child("quantity").getValue(String.class);
+                                                    if(quantity != null && !quantity.equals("")){
+                                                        holder.cart_qty.setText(productData.child("quantity").getValue(String.class));
+                                                        holder.product_total_price.setText(
+                                                                Integer.parseInt(snapshot.child(productKeyNow).child("price").getValue().toString()) *
+                                                                        Integer.parseInt(holder.cart_qty.getText().toString()));
 
-                                            } else {
-                                                holder.cart_qty.setText("1");
-                                                holder.product_total_price.setText(holder.product_price.getText());
+                                                    } else {
+                                                        holder.cart_qty.setText("1");
+                                                        holder.product_total_price.setText(holder.product_price.getText());
+                                                    }
+
+
+                                                }
                                             }
-
-
-                                        }
-                                    }
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
                                 });
-                            } else
-                            {
-                                holder.cart_list_user_layout.setVisibility(View.INVISIBLE);
-                            }
-                        }
+
 
 //                        getCartsByProductId.addValueEventListener(new ValueEventListener() {
 //
@@ -259,23 +259,24 @@ public class UserCartFragment extends Fragment {
 //                            @Override
 //                            public void onCancelled(@NonNull DatabaseError databaseError) { throw databaseError.toException(); }
 //                        });
-
                     }
+
+                    @NonNull
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) { throw databaseError.toException(); }
-                });
+                    public UserCartViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_list_user, parent, false);
+                        return new UserCartViewholder(view);
+                    }
+                };
+
+                recyclerView.setAdapter(adapter);
+                adapter.startListening();
             }
 
-            @NonNull
-            @Override
-            public UserCartFragment.UserCartViewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_list_user, parent, false);
-                return new UserCartFragment.UserCartViewholder(view);
-            }
-        };
+        });
 
-        recyclerView.setAdapter(adapter);
-        adapter.startListening();
+
+
     }
 
     public static class UserCartViewholder extends RecyclerView.ViewHolder{
@@ -300,6 +301,39 @@ public class UserCartFragment extends Fragment {
 //                mClickListener.onItemClick(v, getAdapterPosition());
                 Toast.makeText(v.getContext(),"Navigating to " + product_name + " detail.",Toast.LENGTH_SHORT).show();
 //                    Intent detailIntent = new Intent(Intent.)
+            });
+
+            product_key.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if(orderIdForViewHolder.equals(tvOrderId.getText())) {
+                        String product_key_now = product_key.getText().toString();
+                        mCarts.child(orderIdForViewHolder).child(product_key_now).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    cart_list_user_layout.setVisibility(View.GONE);
+                                    cart_list_user_layout.setEnabled(false);
+                                } else {
+                                    cart_list_user_layout.setVisibility(View.VISIBLE);
+                                    cart_list_user_layout.setEnabled(true);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
+                        });
+                    }
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
             });
         }
 

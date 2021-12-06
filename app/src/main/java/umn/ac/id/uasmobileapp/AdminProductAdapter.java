@@ -20,7 +20,7 @@ public class AdminProductAdapter extends FirebaseRecyclerAdapter<Product, AdminP
     @Override
     protected void onBindViewHolder(@NonNull AdminProductViewholder holder, int position, @NonNull Product model)
     {
-        holder.product_name.setText(model.getProdName());
+        holder.product_name.setText(model.getProduct_name());
 
         holder.product_price.setText(model.getPrice());
 

@@ -67,8 +67,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/title_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:paddingVertical="5dp"
+            app:layout_constraintHeight_percent=".1"
             app:layout_constraintBottom_toTopOf="@id/separator"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,11 +137,12 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/user_cart_list_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent=".80"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/separator" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

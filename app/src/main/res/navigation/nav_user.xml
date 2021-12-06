@@ -12,8 +12,8 @@
         tools:layout="@layout/fragment_user_barang">
         <action
             android:id="@+id/action_userBarangFragment_to_userDetailBarangFragment2"
-            app:destination="@id/userDetailBarangFragment">
-        </action>
+            app:destination="@id/userDetailBarangFragment"
+            app:launchSingleTop="false"></action>
         <argument
             android:name="productKey"
             app:argType="string"
