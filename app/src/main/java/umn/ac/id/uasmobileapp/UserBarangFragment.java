@@ -123,11 +123,11 @@ public class UserBarangFragment extends Fragment {
                                 holder.product_stock.setText("Sisa: " + model.getStock());
 
                                 // Get image path value
-//                                Picasso.get()
-//                                        .load(model.getPicture_path())
-//                                        .placeholder(R.mipmap.ic_launcher)
-//                                        .error(R.drawable.basket_white)
-//                                        .into(holder.product_image);
+                                Picasso.get()
+                                        .load(model.getPicture_path())
+                                        .placeholder(R.mipmap.ic_launcher)
+                                        .error(R.drawable.basket_white)
+                                        .into(holder.product_image);
 
             }
 

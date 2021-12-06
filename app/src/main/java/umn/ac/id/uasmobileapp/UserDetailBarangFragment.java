@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -119,6 +121,11 @@ public class UserDetailBarangFragment extends Fragment {
                     mName.setText(data.child("product_name").getValue(String.class));
                     mDescription.setText(data.child("description").getValue(String.class));
                     mStock.setText(data.child("stock").getValue().toString());
+                    Picasso.get()
+                            .load(snapshot.child("picture_path").getValue(String.class))
+                            .placeholder(R.mipmap.ic_launcher)
+                            .error(R.drawable.basket_white)
+                            .into((ImageView) view.findViewById(R.id.product_image));
 
                     // Convert long to currency format
                     NumberFormat formatCurrency = new DecimalFormat("#,###");
