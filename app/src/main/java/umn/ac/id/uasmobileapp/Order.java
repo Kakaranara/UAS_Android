@@ -4,13 +4,11 @@ public class Order {
 
 
     private String account_id, order_datetime, status;
-    private boolean isCart;
 
     public Order(){}
     public Order(String account_id, String order_datetime, String status){
         this.account_id = account_id;
         this.order_datetime = order_datetime;
-        this.isCart = true;
         this.status = status;
     }
 
@@ -36,13 +34,5 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public boolean isCart() {
-        return isCart;
-    }
-
-    public void setCart(boolean cart) {
-        isCart = cart;
     }
 }

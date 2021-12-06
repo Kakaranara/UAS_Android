@@ -5,9 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/dark_blue"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-
-    android:id="@+id/cart_list_user_layout">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,6 +96,7 @@
                         android:layout_height="0dp"
                         android:textSize="12sp"
                         android:fontFamily="@font/nunito_bold"
+                        android:text="Hwekwake"
                         android:gravity="center_vertical"
                         android:textColor="@color/white"
                         app:layout_constraintBottom_toTopOf="@id/harga_item"
