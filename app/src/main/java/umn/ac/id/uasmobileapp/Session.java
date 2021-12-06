@@ -21,6 +21,15 @@ public class Session {
         return key;
     }
 
+    public void setBusinessKey(String key){
+        prefs.edit().putString("bs",key).commit();
+    }
+
+    public String getBusinessKey(){
+        String key = prefs.getString("bs","");
+        return key;
+    }
+
     public void setLogin(){
         prefs.edit().putBoolean("isLogin",true).commit();
     }

@@ -28,6 +28,7 @@ public class Login extends AppCompatActivity {
     Button btnLogin;
     String passwordFromDB;
     String emailSession;
+    String businessSession;
     String keySession;
     private Session session;
     public static boolean loginUser = false;
@@ -125,12 +126,14 @@ public class Login extends AppCompatActivity {
                         passwordFromDB = userSnapshot.child("password").getValue(String.class);
                         emailSession = userSnapshot.child("email").getValue(String.class);
                         keySession = userSnapshot.getKey();
+                        businessSession = userSnapshot.child("business_id").getValue(String.class);
                     }
 
                     if(passwordFromDB.equals(md5(userEnteredPassword + "user"))){
                         inputPassword.setError(null);
                         loginUser = true;
                         session.setKey(keySession);
+                        session.setBusinessKey(businessSession);
                         session.setLogin();
                         Toast.makeText(Login.this,"User Login Success",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, UserActivity.class);
@@ -138,6 +141,7 @@ public class Login extends AppCompatActivity {
                     } else if(passwordFromDB.equals(md5(userEnteredPassword + "admin"))){
                         loginAdmin = true;
                         session.setKey(keySession);
+                        session.setBusinessKey(businessSession);
                         session.setLogin();
                         Toast.makeText(Login.this, "Admin Login Success", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Login.this, AdminActivity.class);

@@ -36,9 +36,10 @@ import java.util.ArrayList;
 
 public class AdminPesananFragment extends Fragment {
     private View view;
+    String business_id, account_id;
     private RecyclerView recyclerView;
-    Query mbaseQuery;
-    DatabaseReference mbase, productRef, reference,cartRef;
+    Query mbaseQuery,mbaseQuery2, mbaseQuery3, mbaseQuery4;
+    DatabaseReference mbase, productRef, reference,cartRef,accountRef,businessRef;
     Session session;
     ArrayList<Pesanan> listPesanan;
     FirebaseRecyclerAdapter<Order, AdminPesananFragment.AdminPesananViewholder> adapter;
@@ -50,11 +51,14 @@ public class AdminPesananFragment extends Fragment {
         super.onCreate(savedInstanceState);
         session = new Session(getContext());
         System.out.println("KEY pesanan : " + session.getKey());
+        System.out.println("TESTING SESSION BUSINESS :  " + session.getBusinessKey());
 
         listPesanan = new ArrayList<>();
 
         cartRef = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("carts");
         productRef = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
+        accountRef = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("accounts");
+        businessRef = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("business");
 
     }
 
@@ -65,7 +69,9 @@ public class AdminPesananFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.rvOrder);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mbaseQuery = mbase.orderByChild("isCart").equalTo(false);
+//        mbaseQuery = mbase.orderByChild("isCart").equalTo(false);
+        mbaseQuery = mbase.orderByChild("business_cart").equalTo(session.getBusinessKey() + "_" + false);
+        System.out.println("TESTING SESION BISNIS : " + session.getBusinessKey());
 
         return view;
     }
