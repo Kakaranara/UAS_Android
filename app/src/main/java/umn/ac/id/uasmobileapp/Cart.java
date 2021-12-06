@@ -1,6 +1,6 @@
 package umn.ac.id.uasmobileapp;
 
-public class Cart extends Order {
+public class Cart {
 
     String notes;
     int price, quantity;
@@ -8,13 +8,6 @@ public class Cart extends Order {
     public Cart(){}
 
     public Cart(String notes, int price, int quantity){
-        this.notes = notes;
-        this.price = price;
-        this.quantity = quantity;
-    }
-
-    public Cart(String notes, String account_id, String order_datetime, String status, int price, int quantity){
-        super(account_id, order_datetime,status);
         this.notes = notes;
         this.price = price;
         this.quantity = quantity;

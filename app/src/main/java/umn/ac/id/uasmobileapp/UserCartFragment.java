@@ -1,10 +1,14 @@
 package umn.ac.id.uasmobileapp;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +31,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,7 +45,10 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 public class UserCartFragment extends Fragment {
     private View view;
@@ -79,8 +87,6 @@ public class UserCartFragment extends Fragment {
         storage = FirebaseStorage.getInstance("gs://final-project-mobile-app-98d46.appspot.com");
 
 
-
-
     }
 
     @Override
@@ -90,6 +96,37 @@ public class UserCartFragment extends Fragment {
 
         // Set current order ID to view
         tvOrderId = view.findViewById(R.id.order_id);
+
+        // Add listener to proceed button
+        Button proceedOrder = view.findViewById(R.id.proceed_button);
+        proceedOrder.setOnClickListener(v -> {
+            // Get data of carts by newOrderId
+            mCarts.child(newOrderId).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    // If carts data where order_id == newOrderId exists and has more than zero data
+                    if(snapshot.exists() && snapshot.getChildrenCount() > 0) {
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        // Update isCart to false
+                        childUpdates.put("/" + newOrderId + "/isCart", false);
+                        childUpdates.put("/" + newOrderId + "/status", "pending");
+                        childUpdates.put("/" + newOrderId + "/business_cart", sessionBusinessId + "_false");
+                        mOrders.updateChildren(childUpdates);
+
+                        Toast.makeText(getActivity().getApplication(), "Your order has been successfully made with order ID " + newOrderId, Toast.LENGTH_SHORT).show();
+
+                        startActivity(new Intent(getActivity(), UserActivity.class));
+                    } else {
+                        Toast.makeText(getActivity().getApplication(), "Your cart is empty.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
+            });
+        });
 
         TextView tvBusinessName = view.findViewById(R.id.business_name);
         tvBusinessName.setText(sessionBusinessName);
@@ -119,7 +156,7 @@ public class UserCartFragment extends Fragment {
                 Log.e("FIREBASE User Cart", "Error getting data", task.getException());
             }
             else {
-                Log.d("FIREBASE User Cart", String.valueOf(task.getResult().getValue()));
+//                Log.d("FIREBASE User Cart", String.valueOf(task.getResult().getValue()));
 
                 boolean hasCartStatus = false;
 
@@ -154,6 +191,23 @@ public class UserCartFragment extends Fragment {
 //                                            String cartOrderId = snapshot.getKey();
 //                                            System.out.println("DELETING data at carts -> cartOrderId: " + cartOrderId);
                                             snapshot.getRef().removeValue();
+
+                                            // Update order date time
+                                            Map<String, Object> childUpdates = new HashMap<>();
+
+                                            // Generate datetime
+                                            Date c = Calendar.getInstance().getTime();
+                                            SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssZ", Locale.getDefault());
+                                            String formattedDate = df.format(c);
+
+                                            childUpdates.put("/" + orderIdForViewHolder + "/order_datetime", formattedDate);
+                                            mOrders.updateChildren(childUpdates);
+
+//                                            Fragment frg = getFragmentManager().findFragmentByTag("user_cart_frag");
+//                                            final FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                                            ft.detach(frg);
+//                                            ft.attach(frg);
+//                                            ft.commit();
                                         }
                                     }
 
@@ -165,6 +219,7 @@ public class UserCartFragment extends Fragment {
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
                         });
+                        break;
                     }
 
                 }
@@ -172,7 +227,7 @@ public class UserCartFragment extends Fragment {
                 // If order with "cart" status is not found, then create new order id
                 if (!hasCartStatus) {
                     // Create new Order iD
-                    int newOrderIndex = Integer.parseInt(currentOrderId.substring(2,6));
+                    int newOrderIndex = Integer.parseInt(currentOrderId.substring(2,7));
 //                    System.out.println("NEW ORDER INDEX IS: " + newOrderIndex);
                     newOrderId = "OR" + String.format("%05d", newOrderIndex+1);
 //                    System.out.println("PRINTLN | New Order ID is " + newOrderId);
@@ -183,7 +238,7 @@ public class UserCartFragment extends Fragment {
                     String formattedDate = df.format(c);
 
                     // Write to firebase
-                    Order newOrder = new Order(currentSessionAccountId, formattedDate, "cart");
+                    Order newOrder = new Order(currentSessionAccountId, formattedDate, "cart", sessionBusinessId);
                     mOrders.child(newOrderId).setValue(newOrder);
                 }
 
@@ -219,7 +274,7 @@ public class UserCartFragment extends Fragment {
                                 queryProduct.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        System.out.println("CART LIST | DDDDD | Product Now: " + snapshot);
+//                                        System.out.println("CART LIST | DDDDD | Product Now: " + snapshot);
                                         if(snapshot.exists()) {
                                             assert productKeyNow != null;
                                             DataSnapshot productData = snapshot.child(productKeyNow);
@@ -281,7 +336,7 @@ public class UserCartFragment extends Fragment {
 
     }
 
-    public static class UserCartViewholder extends RecyclerView.ViewHolder{
+    public static class UserCartViewholder extends RecyclerView.ViewHolder {
         LinearLayout cart_list_user_layout;
         TextView product_key, product_name, product_price, product_total_price, cart_qty;
         EditText cart_notes;
@@ -299,24 +354,23 @@ public class UserCartFragment extends Fragment {
             cart_notes = itemView.findViewById(R.id.footer_notes);
             remove_btn = itemView.findViewById(R.id.footer_remove_button);
 
-
-
             remove_btn.setOnClickListener(v -> {
-                Toast.makeText(v.getContext(), "Deleting " + product_name.getText().toString() + " from cart.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Removed " + product_name.getText().toString() + " from cart.", Toast.LENGTH_SHORT).show();
                 mCarts.child(orderIdForViewHolder).child(product_key.getText().toString()).removeValue();
-                cart_list_user_layout.setVisibility(View.VISIBLE);
-                cart_list_user_layout.setEnabled(true);
             });
 
-//            cart_qty.setOnEditorActionListener((v, actionId, event) -> {
-//                boolean handled = false;
-//                if (actionId == EditorInfo.IME_ACTION_DONE) {
-//                    mCarts.child(orderIdForViewHolder)
-//                            .child(product_key.getText().toString() + "/quantity")
-//                            .setValue(Integer.parseInt(cart_qty.getText().toString()));
-//                }
-//                return handled;
-//            });
+            cart_qty.setOnEditorActionListener((v, actionId, event) -> {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Map<String, Object> childUpdates = new HashMap<>();
+
+                    // Update isCart to false
+                    String product_key_now = product_key.getText().toString();
+                    childUpdates.put("/" + orderIdForViewHolder + "/" + product_key_now + "/quantity", Integer.parseInt(v.getText().toString()));
+                    mCarts.updateChildren(childUpdates);
+                }
+                return handled;
+            });
 
            product_key.addTextChangedListener(new TextWatcher() {
 

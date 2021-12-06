@@ -203,14 +203,23 @@
                 app:layout_constraintBottom_toTopOf="@id/buy_button"
                 app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
 
-                <ImageButton
-                    android:id="@+id/buy_button"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
-                    android:src="@mipmap/ic_launcher"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+            <LinearLayout
+                android:id="@+id/buy_button"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:background="@drawable/rounded_corner_edit_text_blue"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+                <Button
+                    android:id="@+id/cartBtn"
+                    style="@style/buttonTransparent"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/buy_button"
+                    app:tint="@null" />
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

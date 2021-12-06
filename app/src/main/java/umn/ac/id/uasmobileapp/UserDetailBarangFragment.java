@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -37,9 +38,10 @@ import java.util.Currency;
 public class UserDetailBarangFragment extends Fragment {
     private View view;
     DatabaseReference mbase;
-    String product_key;
+    String product_key, order_id;
     TextView mName, mDescription, mPrice, mStock;
     Button backBtn;
+    Boolean bought;
     private Query query;
 
     public UserDetailBarangFragment() {}
@@ -67,9 +69,45 @@ public class UserDetailBarangFragment extends Fragment {
             fragmentTransaction.commit();
         });
 
+        Button buyBtn = view.findViewById(R.id.cartBtn);
+
+
         if (getArguments() != null) {
             product_key = getArguments().getString("product_key", "");
+            order_id = getArguments().getString("order_id", "");
+            bought = getArguments().getBoolean("bought", false);
+            if(bought) buyBtn.setEnabled(false);
+            else buyBtn.setEnabled(true);
         }
+
+
+        buyBtn.setOnClickListener(view -> {
+            try {
+                int stockNow = Integer.parseInt(mStock.getText().toString());
+                if(stockNow > 1) {
+                    if(order_id != null) {
+                        Cart newCart = new Cart(
+                                "-",
+                                Integer.parseInt(mPrice.getText().toString()
+                                        .replace("Rp ", "")
+                                        .replace(",", "")),
+                                1);
+                        System.out.println("PRODUCT ID: " + product_key + " | StOCK NOW: " + stockNow);
+                        DatabaseReference mCarts = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("carts");
+                        mCarts.child(order_id).child(product_key).setValue(newCart);
+                        buyBtn.setEnabled(false);
+                        buyBtn.setVisibility(View.INVISIBLE);
+
+                        Toast.makeText(view.getContext(), "Your order for " + mName.getText().toString() + " has been successfully added to the cart.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        buyBtn.setEnabled(true);
+                        buyBtn.setVisibility(View.VISIBLE);
+                    }
+                }
+            } catch(NumberFormatException nfe) {
+                System.out.println("Could not parse " + nfe);
+            }
+        });
 
         mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference("products");
         query = mbase.orderByKey().equalTo(product_key);

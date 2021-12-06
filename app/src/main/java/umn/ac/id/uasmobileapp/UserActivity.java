@@ -54,10 +54,10 @@ public class UserActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()){
                     for(DataSnapshot businessSnapshot : dataSnapshot.getChildren()){
                         namaBisnis = businessSnapshot.child("business_name").getValue(String.class);
-                        Toast.makeText(UserActivity.this,"Business name: " + namaBisnis,Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(UserActivity.this,"Business name: " + namaBisnis,Toast.LENGTH_SHORT).show();
 
                         businessId = businessSnapshot.getKey();
-                        Toast.makeText(UserActivity.this,"Business ID KEY: " + businessId,Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(UserActivity.this,"Business ID KEY: " + businessId,Toast.LENGTH_SHORT).show();
 
 
                     }

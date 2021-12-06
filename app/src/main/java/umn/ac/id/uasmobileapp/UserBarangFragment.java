@@ -1,6 +1,7 @@
 package umn.ac.id.uasmobileapp;
 
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -32,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -78,7 +81,14 @@ public class UserBarangFragment extends Fragment {
                 (requestKey, bundle1) -> {
                     // We use a String here, but any type that can be put in a Bundle is supported
                     order_id = bundle1.getString("order_id");
-                    System.out.println("INPUTTING TO CART | Order ID is " + order_id);
+//                    System.out.println("INPUTTING TO CART | Order ID is " + order_id);
+                });
+
+        fm.setFragmentResultListener("cart_removed", lifecycle_owner,
+                (requestKey, bundle1) -> {
+                    // We use a String here, but any type that can be put in a Bundle is supported
+                    order_id = bundle1.getString("order_id");
+//                    System.out.println("INPUTTING TO CART | Order ID is " + order_id);
                 });
 
         // To display the Recycler view with two columns
@@ -97,7 +107,7 @@ public class UserBarangFragment extends Fragment {
         adapter = new FirebaseRecyclerAdapter<Product, UserBarangFragment.UserProductViewholder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull UserBarangFragment.UserProductViewholder holder, int position, @NonNull Product model) {
-                Log.d("FIREBASE User Barang", String.valueOf(getRef(position).getKey()));
+//                Log.d("FIREBASE User Barang", String.valueOf(getRef(position).getKey()));
 
                                 final String product_key = getRef(position).getKey();
                                 holder.product_key.setText(product_key);
@@ -113,52 +123,11 @@ public class UserBarangFragment extends Fragment {
                                 holder.product_stock.setText("Sisa: " + model.getStock());
 
                                 // Get image path value
-//                                DatabaseReference getImagePath = getRef(holder.getAdapterPosition()).child("picture_path").getRef();
-//                                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-//                                StorageReference imageRef = storageRef.child("/images/products/" + getImagePath);
-////                                Toast.makeText(getActivity().getApplication(), "Image path: " + imageRef.getDownloadUrl(), Toast.LENGTH_SHORT).show();
-//
-//                                imageRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
-////                                    Toast.makeText(getActivity().getApplication(), "Url: " + downloadUrl, Toast.LENGTH_SHORT).show();
-//                                    Glide.with(getActivity().getApplicationContext())
-//                                            .load(downloadUrl)
-//                                            .into(holder.product_image);
-//                                });
-
-//                                getImagePath.addValueEventListener(new ValueEventListener() {
-//                                    @Override
-//                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                        if(dataSnapshot.exists()){
-//                                            String imagePath = dataSnapshot.getValue().toString();
-//
-//                                            // Create a reference with an initial file path and name
-//                                            // Points to the root reference
-//                                            Task<Uri> imageStoragePath = storage
-//                                                    .getReference()
-//                                                    .child("images/products/" + imagePath)
-//                                                    .getDownloadUrl();
-//
-//                                            Toast.makeText(getActivity().getApplication(), "Image path: " + imageStoragePath, Toast.LENGTH_SHORT).show();
-//
-////                            final long ONE_MEGABYTE = 1024 * 1024;
-////                            storageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-////                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                                            Glide.with(getActivity().getApplicationContext())
-//                                                    .load(imageStoragePath)
-//                                                    .into(holder.product_image);
-////                            }).addOnFailureListener(exception -> Toast.makeText(getActivity().getApplicationContext(),
-////                                    "Product picture is not found.",
-////                                    Toast.LENGTH_LONG).show());;
-//
-//                                        } else Toast.makeText(getActivity().getApplication(), "Image path not found.", Toast.LENGTH_SHORT).show();
-//
-//                                    }
-//                                    @Override
-//                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                                        Toast.makeText(getActivity().getApplication(), "Image path retrieve cancelled.", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                });
-
+//                                Picasso.get()
+//                                        .load(model.getPicture_path())
+//                                        .placeholder(R.mipmap.ic_launcher)
+//                                        .error(R.drawable.basket_white)
+//                                        .into(holder.product_image);
 
             }
 
@@ -208,10 +177,11 @@ public class UserBarangFragment extends Fragment {
             cart_btn = itemView.findViewById(R.id.cartBtn);
 
             info_btn.setOnClickListener(v -> {
-//                mClickListener.onItemClick(v, getAdapterPosition());
-
                 Bundle bundle = new Bundle();
                 bundle.putString("product_key", product_key.getText().toString());
+                bundle.putString("order_id", order_id);
+                if(cart_btn.isEnabled()) bundle.putBoolean("bought", false);
+                else bundle.putBoolean("bought", true);
                 NavHostFragment.findNavController(FragmentManager.findFragment(v)).
                         navigate(R.id.action_userBarangFragment_to_userDetailBarangFragment2, bundle);
             });
@@ -233,13 +203,10 @@ public class UserBarangFragment extends Fragment {
                 public void afterTextChanged(Editable s) {
                     if (order_id != null) {
                         String product_key_now = product_key.getText().toString();
-                        mCarts.child(order_id).child(product_key_now).get().addOnCompleteListener(task -> {
-                            if (!task.isSuccessful()) {
-                                Log.e("FIREBASE User Cart Button", "Error getting data", task.getException());
-                            } else {
-                                Log.e("FIREBASE User Cart Button", String.valueOf(task.getResult().getValue()));
-
-                                if (task.getResult().getValue() != null) {
+                        mCarts.child(order_id).child(product_key_now).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
                                     cart_btn.setVisibility(View.INVISIBLE);
                                     cart_btn.setEnabled(false);
                                 } else {
@@ -248,6 +215,8 @@ public class UserBarangFragment extends Fragment {
                                 }
                             }
 
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
                         });
 
                     }
@@ -267,6 +236,7 @@ public class UserBarangFragment extends Fragment {
                                     1);
                             String product_key_now = product_key.getText().toString();
                             System.out.println("PRODUCT ID: " + product_key_now + " | StOCK NOW: " + stockNow);
+                            Toast.makeText(view.getContext(), "Your order for " + product_name.getText().toString() + " has been added to the cart.", Toast.LENGTH_SHORT).show();
 
                             mCarts.child(order_id).child(product_key_now).setValue(newCart);
                             cart_btn.setEnabled(false);
