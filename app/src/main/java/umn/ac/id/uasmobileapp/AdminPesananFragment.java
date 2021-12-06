@@ -28,12 +28,25 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class AdminPesananFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     Query mbaseQuery;
     DatabaseReference mbase, productRef, reference,cartRef;
     Session session;
+    ArrayList<Pesanan> listPesanan;
+
+    private String orderID;
+    private String[] menu;
+    private int[] harga;
+    private int[] jumlahPemesanan;
+    private int pembayaran;
+    private String status;
+
+
+
 
     public AdminPesananFragment() { }
 
@@ -42,18 +55,22 @@ public class AdminPesananFragment extends Fragment {
         super.onCreate(savedInstanceState);
         session = new Session(getContext());
         System.out.println("KEY pesanan : " + session.getKey());
+
+        listPesanan = new ArrayList<>();
+
+        cartRef = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("carts");
+        productRef = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_admin_pesanan, container, false);
         mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("orders");
-        cartRef = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("carts");
         recyclerView = (RecyclerView) view.findViewById(R.id.rvOrder);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mbaseQuery = mbase.orderByChild("isCart").equalTo(false);
-
 
         return view;
     }
@@ -74,7 +91,6 @@ public class AdminPesananFragment extends Fragment {
             @Override
             public void onDataChanged() {
                 super.onDataChanged();
-
             }
 
             @Override
@@ -91,22 +107,48 @@ public class AdminPesananFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull AdminPesananViewholder holder, int position, @NonNull Order model) {
+                holder.idPesanan.setText(getRef(position).getKey());
                 holder.statusPesanan.setText(model.getStatus());
-                cartRef.addValueEventListener(new ValueEventListener() {
+                getRef(position).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists()){
-                            System.out.println("ALL SNAPSHOT" + snapshot);
-                            System.out.println("TESTING" + snapshot.getChildren());
-                            System.out.println("TESTING 2 : " + snapshot.getValue());
-                            System.out.println("TESTING 3 : " + snapshot.getValue().getClass());
-                            for(DataSnapshot orderSnapshot : snapshot.getChildren()){
-                                System.out.println(orderSnapshot.getKey());
-                                holder.idPesanan.setText(orderSnapshot.getKey());
-                                for(DataSnapshot productSnapshot : orderSnapshot.getChildren()){
+                        if (snapshot.exists()){
+                            System.out.println("SNAPSHOT UTAMA : " + snapshot);
+                            cartRef.orderByKey().equalTo(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for(DataSnapshot orderSnapshot : snapshot.getChildren()){
+                                        int harga_total = 0;
+                                        for(DataSnapshot productSnapshot: orderSnapshot.getChildren()){
+                                            harga_total += productSnapshot.child("price").getValue(Integer.class) * productSnapshot.child("quantity").getValue(Integer.class);
+                                            productRef.orderByKey().equalTo(productSnapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    System.out.println("SNAPSHOT PRODUCT : " + snapshot);
+                                                    for(DataSnapshot productSnapshot : snapshot.getChildren()){
+                                                        System.out.println("DATA SNAPSHOT : " + productSnapshot);
+                                                        holder.namaMenu.setText(productSnapshot.child("product_name").getValue(String.class));
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                        }
+                                        holder.hargaTotal.setText("Rp. " + harga_total );
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
                                 }
-                            }
+                            });
+                        }
+                        else{
+
                         }
                     }
 
@@ -124,8 +166,7 @@ public class AdminPesananFragment extends Fragment {
         };
 
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
                         pembayaranDialog();
@@ -135,24 +176,22 @@ public class AdminPesananFragment extends Fragment {
                     public void onLongItemClick(View view, int position) {
 
                     }
-                })
-        );
+                }));
         adapter.startListening();
     }
 
     public class AdminPesananViewholder extends RecyclerView.ViewHolder {
         ImageView btnEdit, btnDelete;
-        TextView idPesanan,statusPesanan;
+        TextView idPesanan,statusPesanan,namaMenu,hargaTotal;
 
-
-
-        public AdminPesananViewholder(@NonNull View itemView)
-        {
+        public AdminPesananViewholder(@NonNull View itemView) {
             super(itemView);
             btnEdit = itemView.findViewById(R.id.btnEditAdmin_pesanan_card);
             btnDelete = itemView.findViewById(R.id.btnDeleteAdmin_pesanan_card);
             idPesanan = itemView.findViewById(R.id.card_id_order_admin);
             statusPesanan = itemView.findViewById(R.id.card_order_status);
+            namaMenu = itemView.findViewById(R.id.card_order_nama_makanan);
+            hargaTotal = itemView.findViewById(R.id.card_order_harga);
             btnEdit.setOnClickListener(v->{
                 editDialog();
             });
