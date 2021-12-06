@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,16 +39,6 @@ public class AdminPesananFragment extends Fragment {
     Session session;
     ArrayList<Pesanan> listPesanan;
     FirebaseRecyclerAdapter<Order, AdminPesananFragment.AdminPesananViewholder> adapter;
-
-    private String orderID;
-    private String[] menu;
-    private int[] harga;
-    private int[] jumlahPemesanan;
-    private int pembayaran;
-    private String status;
-
-
-
 
     public AdminPesananFragment() { }
 
@@ -87,7 +78,7 @@ public class AdminPesananFragment extends Fragment {
                 .build();
 
 
-                adapter = new FirebaseRecyclerAdapter<Order, AdminPesananFragment.AdminPesananViewholder>(options) {
+        adapter = new FirebaseRecyclerAdapter<Order, AdminPesananFragment.AdminPesananViewholder>(options) {
 
             @Override
             public void onDataChanged() {
@@ -167,27 +158,18 @@ public class AdminPesananFragment extends Fragment {
         };
 
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        pembayaranDialog();
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-
-                    }
-                }));
         adapter.startListening();
     }
 
     public class AdminPesananViewholder extends RecyclerView.ViewHolder {
-        ImageView btnEdit, btnDelete;
+        ImageView btnDelete;
+        CardView btnEdit;
         TextView idPesanan,statusPesanan,namaMenu,hargaTotal;
 
         public AdminPesananViewholder(@NonNull View itemView) {
             super(itemView);
             btnEdit = itemView.findViewById(R.id.btnEditAdmin_pesanan_card);
+            itemView.setOnClickListener(v->pembayaranDialog());
             btnDelete = itemView.findViewById(R.id.btnDeleteAdmin_pesanan_card);
             idPesanan = itemView.findViewById(R.id.card_id_order_admin);
             statusPesanan = itemView.findViewById(R.id.card_order_status);
@@ -196,6 +178,11 @@ public class AdminPesananFragment extends Fragment {
             btnEdit.setOnClickListener(v->{
                 editDialog();
             });
+
+        }
+
+        public void onClick(View view){
+
         }
     }
 
@@ -213,6 +200,8 @@ public class AdminPesananFragment extends Fragment {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
         dialog.setContentView(R.layout.fragment_admin_pembayaran);
+
+
 
         dialog.show();
     }
