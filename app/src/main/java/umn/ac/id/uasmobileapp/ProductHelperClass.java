@@ -5,13 +5,12 @@ public class ProductHelperClass {
     Integer discount, price, stock;
 
     public ProductHelperClass(){}
-    public ProductHelperClass(String business_id, String category, String description,
-                              String picture_path, String product_name, Integer price,
+    public ProductHelperClass(String business_id, String category, String description, String product_name, Integer price,
                               Integer stock, Integer discount){
         this.business_id = business_id;
         this.category = category;
         this.description = description;
-        this.picture_path = picture_path;
+        //this.picture_path = picture_path;
         this.product_name = product_name;
         this.discount = discount;
         this.price = price;
@@ -42,13 +41,13 @@ public class ProductHelperClass {
         this.description = description;
     }
 
-    public String getPicture_path() {
-        return picture_path;
-    }
-
-    public void setPicture_path(String picture_path) {
-        this.picture_path = picture_path;
-    }
+//    public String getPicture_path() {
+//        return picture_path;
+//    }
+//
+//    public void setPicture_path(String picture_path) {
+//        this.picture_path = picture_path;
+//    }
 
     public String getProduct_name() {
         return product_name;

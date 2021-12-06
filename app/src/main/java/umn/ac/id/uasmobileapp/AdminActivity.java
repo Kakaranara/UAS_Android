@@ -19,10 +19,13 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 public class AdminActivity extends AppCompatActivity {
+    public static String businessId;
     ImageButton btnBarangAdmin,btnHome,btnPesananAdmin;
     TextView tVnamaBisnisAdmin;
     Session session;
     String businessName;
+
+    //public String businessId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class AdminActivity extends AppCompatActivity {
                     System.out.println(dataSnapshot);
                     for(DataSnapshot businessSnapshot: dataSnapshot.getChildren()){
                         businessName = businessSnapshot.child("business_name").getValue(String.class);
+                        businessId = businessSnapshot.getKey();
                     } tVnamaBisnisAdmin.setText(businessName);
                 }
                 else{

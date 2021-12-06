@@ -1,32 +1,50 @@
 package umn.ac.id.uasmobileapp;
 
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.UUID;
 
@@ -35,12 +53,16 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
     private View view;
     private RecyclerView recyclerView;
     //AdminProductAdapter adapter;
-    DatabaseReference mbase, productRef;
+    DatabaseReference mbase;
+    DatabaseReference imageRoot = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference("products");
     private String currentUser = "BU00001";
     public Button button;
-    private String user_key, key, business_id;
+    public String user_key, key;
     Session session;
     private FirebaseRecyclerAdapter<Product, AdminProductViewholder> adapter; // Create Object of the Adapter class
+
+    private Uri imageUri, imageUri2;
+    private StorageReference mStorageRef;
 
     FirebaseDatabase rootNode;
     DatabaseReference reference,secRef;
@@ -88,26 +110,12 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
 
         session = new Session(getContext());
         user_key = session.getKey();
-        System.out.println("----------------------------- KEY : " + user_key);
 
-        DatabaseReference reference = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference("accounts").child(user_key);
+        key = AdminActivity.businessId;
 
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    key = dataSnapshot.child("business_id").getValue().toString();
-                    System.out.println(key);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         mbase = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/").getReference().child("products");
+        mStorageRef = FirebaseStorage.getInstance("gs://final-project-mobile-app-98d46.appspot.com").getReference();
 
         recyclerView = (RecyclerView) view.findViewById(R.id.rvProduct);
 
@@ -126,93 +134,38 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
     {
         super.onStart();
         // It is a class provide by the FirebaseUI to make a query in the database to fetch appropriate data
+        System.out.println(key);
+
         FirebaseRecyclerOptions<Product> options
                 = new FirebaseRecyclerOptions.Builder<Product>()
-                .setQuery(mbase, Product.class)
+                .setQuery(mbase.orderByChild("business_id").equalTo(key), Product.class)
                 .build();
+
+        //System.out.println(key);
 
         adapter = new FirebaseRecyclerAdapter<Product, AdminProductViewholder>(options) {
                     @Override
                     protected void onBindViewHolder(@NonNull AdminProductViewholder holder, int position, @NonNull Product model) {
-                        DatabaseReference getBusinessId = getRef(position).child("business_id").getRef();
+                        //DatabaseReference getBusinessId = getRef(position).child("business_id").getRef();
                         //final String product_key = getRef(position).getKey();
                         //Query query = mbase.orderByChild("business_id").equalTo(key);
 
-                        getBusinessId.addValueEventListener(new ValueEventListener() {
+                        Log.d("FIREBASE Admin Barang", String.valueOf(getRef(position).getKey()));
+
+                        final String product_key = getRef(position).getKey();
+                        System.out.println(product_key);
+                        holder.deleteBtn.setText(product_key);
+                        holder.editBtn.setText(product_key);
+
+                        //Get & Show Name
+                        DatabaseReference getName = getRef(position).child("product_name").getRef();
+                        getName.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    business_id = dataSnapshot.getValue().toString();
-                                    if(business_id.equals(key)){
-                                        final String product_key = getRef(holder.getAdapterPosition()).getKey();
-                                        holder.deleteBtn.setText(product_key);
-                                        holder.editBtn.setText(product_key);
-
-                                        //Get & Show Name
-                                        DatabaseReference getName = getRef(holder.getAdapterPosition()).child("product_name").getRef();
-                                        getName.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                if(dataSnapshot.exists()) {
-                                                    String name = dataSnapshot.getValue().toString();
-                                                    holder.product_name.setText(name);
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-                                        DatabaseReference getPrice = getRef(holder.getAdapterPosition()).child("product_price").getRef();
-                                        getPrice.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                if(dataSnapshot.exists()){
-                                                    String price = dataSnapshot.getValue().toString();
-                                                    holder.product_price.setText(price);
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-                                        DatabaseReference getStock = getRef(holder.getAdapterPosition()).child("stock").getRef();
-                                        getStock.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                if(dataSnapshot.exists()){
-                                                    String stock = dataSnapshot.getValue().toString();
-                                                    holder.product_quantity.setText(stock);
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-//                                        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(View view) {
-//                                                mbase.child((String) holder.deleteBtn.getText()).removeValue();
-//                                            }
-//                                        });
-//
-//                                        //holder.product_quantity.setText(model.getStock());
-//                                        holder.editBtn.setOnClickListener(new View.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(View view) {
-//                                                showEditDialog();
-//                                            }
-//                                        });
-
-                                    }
+                                if(dataSnapshot.exists()) {
+                                    String name = dataSnapshot.getValue().toString();
+                                    //System.out.println("------------LINK-------------:" + name);
+                                    holder.product_name.setText(name);
                                 }
                             }
 
@@ -221,6 +174,76 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
 
                             }
                         });
+
+                        //Get & Show Image
+                        DatabaseReference getImage = getRef(position).child("picture_path").getRef();
+                        getImage.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()) {
+                                    String image = dataSnapshot.getValue().toString();
+                                    //System.out.println("------------LINK-------------:" + image);
+                                    Picasso.get().load(image).placeholder(R.mipmap.ic_launcher).error(R.drawable.basket_white).into(holder.product_image);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        DatabaseReference getPrice = getRef(position).child("product_price").getRef();
+                        getPrice.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
+                                    String price = dataSnapshot.getValue().toString();
+                                    holder.product_price.setText(price);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        DatabaseReference getStock = getRef(position).child("stock").getRef();
+                        getStock.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
+                                    String stock = dataSnapshot.getValue().toString();
+                                    holder.product_quantity.setText(stock);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+//                        if(business_id.equals(key)){
+//
+//
+////                                        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+////                                            @Override
+////                                            public void onClick(View view) {
+////                                                mbase.child((String) holder.deleteBtn.getText()).removeValue();
+////                                            }
+////                                        });
+////
+////                                        //holder.product_quantity.setText(model.getStock());
+////                                        holder.editBtn.setOnClickListener(new View.OnClickListener() {
+////                                            @Override
+////                                            public void onClick(View view) {
+////                                                showEditDialog();
+////                                            }
+////                                        });
+//
+//                        }
                     }
 
                     @NonNull
@@ -254,6 +277,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         final EditText descEt = dialog.findViewById(R.id.desc_fill);
         Button submit = dialog.findViewById(R.id.submit);
         Button cancel = dialog.findViewById(R.id.cancel);
+        Button upload = dialog.findViewById(R.id.change_picture);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,12 +295,22 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
                 String etStock = stockEt.getText().toString();
                 int stock = Integer.parseInt(etStock);
                 String description = descEt.getText().toString();
+                String id = "PR000" + etStock;
 
                 //Insert Data to Database
-                ProductHelperClass helperClass = new ProductHelperClass(key, null, description, "", product_name, price, stock, discount);
+                ProductHelperClass helperClass = new ProductHelperClass(key, null, description, product_name, price, stock, discount);
                 reference.child("PR000" + etStock).setValue(helperClass);
 
+                if(imageUri != null){
+                    uploadToFirebase(imageUri, id);
+                }else{
+                    Toast.makeText(getContext(), "Please Select Image", Toast.LENGTH_SHORT);
+                }
+
                 dialog.dismiss();
+
+                AdminBarangFragment fragment = new AdminBarangFragment();
+                getFragmentManager().beginTransaction().replace(R.id.adminContainerFragment, fragment).commit();
             }
         });
 
@@ -287,7 +321,59 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
             }
         });
 
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent galleryIntent = new Intent();
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent, 2);
+            }
+        });
+
         dialog.show();
+    }
+
+    private void uploadToFirebase(Uri uri, String id){
+        StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(uri));
+        System.out.println("----------URI--------------- Luar : "+uri);
+        fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                System.out.println("----------ID--------------- Tengah : "+id);
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        System.out.println("----------ID--------------- Dalam : "+id);
+                        //Image model = new Image(uri.toString());
+                        String modelId = mbase.push().getKey();
+                        imageRoot.child(id).child("picture_path").setValue(uri.toString());
+                        //Toast.makeText(getContext(), "Uploaded Successfully", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                System.out.println(e);
+            }
+        });
+    }
+
+    private String getFileExtension(Uri uri){
+        ContentResolver cr = getContext().getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(imageUri));
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 2 && resultCode == AdminActivity.RESULT_OK && data != null){
+            imageUri = data.getData();
+        }
     }
 
     public void showEditDialog(String product_id, int position){
@@ -303,6 +389,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         final EditText descEt = dialog.findViewById(R.id.desc_fill);
         Button submit = dialog.findViewById(R.id.submit);
         Button cancel = dialog.findViewById(R.id.cancel);
+        Button upload = dialog.findViewById(R.id.change_picture);
 
         FirebaseDatabase nodePos = FirebaseDatabase.getInstance("https://final-project-mobile-app-98d46-default-rtdb.firebaseio.com/");
         secRef = nodePos.getReference("products").child(product_id);
@@ -341,8 +428,21 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
                 //Edit Data to Database
                 //reference.child("product_name").setValue(name);
                 //Insert Data to Database
-                ProductHelperClass helperClass = new ProductHelperClass(key, null, desc, "", name, price, stock, discount);
+
+                if(imageUri != null){
+                    uploadToFirebase(imageUri, product_id);
+                }else{
+                    Toast.makeText(getContext(), "Please Select Image", Toast.LENGTH_SHORT);
+                }
+
+                ProductHelperClass helperClass = new ProductHelperClass(key, null, desc, name, price, stock, discount);
                 secRef.setValue(helperClass);
+
+                if(imageUri != null){
+                    uploadToFirebase(imageUri, product_id);
+                }else{
+                    Toast.makeText(getContext(), "Please Select Image", Toast.LENGTH_SHORT);
+                }
 
                 dialog.dismiss();
 
@@ -352,6 +452,16 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
 
                 AdminBarangFragment fragment = new AdminBarangFragment();
                 getFragmentManager().beginTransaction().replace(R.id.adminContainerFragment, fragment).commit();
+            }
+        });
+
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent galleryIntent = new Intent();
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent, 2);
             }
         });
 
@@ -368,6 +478,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
     public class AdminProductViewholder extends RecyclerView.ViewHolder {
         private final DatabaseReference mbase;
         TextView product_name, product_price, product_quantity;
+        ShapeableImageView product_image;
         Button editBtn, deleteBtn;
         public AdminProductViewholder(@NonNull View itemView)
         {
@@ -376,6 +487,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
             product_name = itemView.findViewById(R.id.product_name);
             product_price = itemView.findViewById(R.id.product_price);
             product_quantity = itemView.findViewById(R.id.prduct_quantity);
+            product_image = itemView.findViewById(R.id.product_image);
             editBtn = itemView.findViewById(R.id.editBtn);
             editBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
