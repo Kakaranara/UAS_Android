@@ -26,6 +26,7 @@ public class AdminHomeFragment extends Fragment {
     Session session;
     DatabaseReference orderRef, cartRef;
     ArrayList<String> total_customer = new ArrayList<>();
+    int quantity = 0;
 
     public AdminHomeFragment() {
         // Required empty public constructor
@@ -83,7 +84,15 @@ public class AdminHomeFragment extends Fragment {
                     cartRef.orderByKey().equalTo(order_key_now).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            System.out.println("TESTING SNAPSHOT : " + snapshot);
+                            for(DataSnapshot orderSnapshot : snapshot.getChildren()){
+                                for(DataSnapshot cartSnapshot: orderSnapshot.getChildren()){
+                                    System.out.println("cart snapshot test : " + cartSnapshot);
+                                    quantity += cartSnapshot.child("quantity").getValue(Integer.class);
+                                    System.out.println("Quantity Sekarang : " + quantity);
+                                }
+                                System.out.println("Quantity 2 : " + quantity);
+                            }
+                            tvTotalDish.setText("" + quantity);
                         }
 
                         @Override
