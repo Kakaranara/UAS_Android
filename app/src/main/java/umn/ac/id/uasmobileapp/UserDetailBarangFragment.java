@@ -61,14 +61,17 @@ public class UserDetailBarangFragment extends Fragment {
         backBtn.setOnClickListener(view -> {
 //            NavHostFragment.findNavController(FragmentManager.findFragment(view)).
 //                    navigate(R.id.action_userDetailBarangFragment_to_userBarangFragment);
-            Fragment fragment = new UserBarangFragment();
-            FragmentTransaction fragmentTransaction = getFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.user_container_fragment, fragment)
-                    .detach(fragment)
-                    .attach(fragment)
-                    .addToBackStack(null);
-            fragmentTransaction.commit();
+//            Fragment fragment = new UserBarangFragment();
+//            FragmentTransaction fragmentTransaction = getFragmentManager()
+//                    .beginTransaction()
+//                    .replace(R.id.user_container_fragment, fragment);
+////                    .detach(fragment)
+////                    .attach(fragment)
+////                    .addToBackStack(null);
+//            fragmentTransaction.commit();
+
+            UserBarangFragment fragment = new UserBarangFragment();
+            getFragmentManager().beginTransaction().replace(R.id.user_container_fragment, fragment).commit();
         });
 
         Button buyBtn = view.findViewById(R.id.cartBtn);

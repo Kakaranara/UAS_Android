@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -264,6 +265,8 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         showCustomDialog();
     }
 
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
     void showCustomDialog(){
         final Dialog dialog = new Dialog(getContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -278,6 +281,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         Button submit = dialog.findViewById(R.id.submit);
         Button cancel = dialog.findViewById(R.id.cancel);
         Button upload = dialog.findViewById(R.id.change_picture);
+        Button camera = dialog.findViewById(R.id.camera);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -331,20 +335,29 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
             }
         });
 
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent takePictureIntent = new Intent();
+                takePictureIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        });
+
         dialog.show();
     }
 
     private void uploadToFirebase(Uri uri, String id){
         StorageReference fileRef = mStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(uri));
-        System.out.println("----------URI--------------- Luar : "+uri);
+        //System.out.println("----------URI--------------- Luar : "+uri);
         fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("----------ID--------------- Tengah : "+id);
+                //System.out.println("----------ID--------------- Tengah : "+id);
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        System.out.println("----------ID--------------- Dalam : "+id);
+                        //System.out.println("----------ID--------------- Dalam : "+id);
                         //Image model = new Image(uri.toString());
                         String modelId = mbase.push().getKey();
                         imageRoot.child(id).child("picture_path").setValue(uri.toString());
@@ -372,6 +385,12 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 2 && resultCode == AdminActivity.RESULT_OK && data != null){
+            System.out.println("Masuk");
+            imageUri = data.getData();
+        }
+
+        if(requestCode == REQUEST_IMAGE_CAPTURE){
+            System.out.println("Masuk Camera");
             imageUri = data.getData();
         }
     }
@@ -506,10 +525,10 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
         }
     }
 
-//    @Override
-//    public void onStop()
-//    {
-//        super.onStop();
-//        adapter.stopListening();
-//    }
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        adapter.stopListening();
+    }
 }
