@@ -194,7 +194,7 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
                             }
                         });
 
-                        DatabaseReference getPrice = getRef(position).child("product_price").getRef();
+                        DatabaseReference getPrice = getRef(position).child("price").getRef();
                         getPrice.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -299,11 +299,11 @@ public class AdminBarangFragment extends Fragment implements View.OnClickListene
                 String etStock = stockEt.getText().toString();
                 int stock = Integer.parseInt(etStock);
                 String description = descEt.getText().toString();
-                String id = "PR000" + etStock;
+                String id = "PR" + UUID.randomUUID().toString();;
 
                 //Insert Data to Database
                 ProductHelperClass helperClass = new ProductHelperClass(key, null, description, product_name, price, stock, discount);
-                reference.child("PR000" + etStock).setValue(helperClass);
+                reference.child(id).setValue(helperClass);
 
                 if(imageUri != null){
                     uploadToFirebase(imageUri, id);
