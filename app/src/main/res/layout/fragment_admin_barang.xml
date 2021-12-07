@@ -40,6 +40,7 @@
         android:id="@+id/rvProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
         android:layout_gravity="center_horizontal|center_vertical"
         android:layout_marginTop="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
