@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UasMobileApp</string>
+    <string name="app_name">AssiStaff</string>
     <string name="log_in">Log in</string>
     <string name="register">Register</string>
     <string name="email">Email</string>
