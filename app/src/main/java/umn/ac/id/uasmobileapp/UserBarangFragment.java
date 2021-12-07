@@ -109,25 +109,25 @@ public class UserBarangFragment extends Fragment {
             protected void onBindViewHolder(@NonNull UserBarangFragment.UserProductViewholder holder, int position, @NonNull Product model) {
 //                Log.d("FIREBASE User Barang", String.valueOf(getRef(position).getKey()));
 
-                                final String product_key = getRef(position).getKey();
-                                holder.product_key.setText(product_key);
+                final String product_key = getRef(position).getKey();
+                holder.product_key.setText(product_key);
 
-                                // Get product name value
-                                holder.product_name.setText(model.getProduct_name());
+                // Get product name value
+                holder.product_name.setText(model.getProduct_name());
 
-                                // Get price value
-                                NumberFormat formatCurrency = new DecimalFormat("#,###");
-                                holder.product_price.setText("Rp " + formatCurrency.format(model.getPrice()));
+                // Get price value
+                NumberFormat formatCurrency = new DecimalFormat("#,###");
+                holder.product_price.setText("Rp " + formatCurrency.format(model.getPrice()));
 
-                                // Get quantity/stock value
-                                holder.product_stock.setText("Sisa: " + model.getStock());
+                // Get quantity/stock value
+                holder.product_stock.setText("Sisa: " + model.getStock());
 
-                                // Get image path value
-                                Picasso.get()
-                                        .load(model.getPicture_path())
-                                        .placeholder(R.mipmap.ic_launcher)
-                                        .error(R.drawable.basket_white)
-                                        .into(holder.product_image);
+                // Get image path value
+                Picasso.get()
+                        .load(model.getPicture_path())
+                        .placeholder(R.mipmap.ic_launcher)
+                        .error(R.drawable.basket_white)
+                        .into(holder.product_image);
 
             }
 
@@ -145,8 +145,9 @@ public class UserBarangFragment extends Fragment {
             }
         };
 
-                    recyclerView.setAdapter(adapter);
-                    adapter.startListening();
+        System.out.println("BERHASIL BARANG");
+        recyclerView.setAdapter(adapter);
+        adapter.startListening();
 
         // Connecting Adapter class with the Recycler view
         return view;
