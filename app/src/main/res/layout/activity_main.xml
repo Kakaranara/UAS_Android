@@ -89,7 +89,6 @@
     <Button
         android:id="@+id/btnUser"
         style="@style/buttonMain"
-        android:visibility="gone"
         android:background="@drawable/rounded_corner_button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"

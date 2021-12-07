@@ -145,7 +145,6 @@ public class UserBarangFragment extends Fragment {
             }
         };
 
-        System.out.println("BERHASIL BARANG");
                     recyclerView.setAdapter(adapter);
                     adapter.startListening();
 

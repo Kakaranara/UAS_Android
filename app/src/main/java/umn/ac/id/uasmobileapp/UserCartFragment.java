@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -40,7 +39,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -106,50 +104,20 @@ public class UserCartFragment extends Fragment {
             mCarts.child(newOrderId).addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
-                public void onDataChange(@NonNull DataSnapshot cartSnapshot) {
-                    System.out.println("SNAPSHOT GETKEY  cartSnapshot|: " + cartSnapshot);
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                     // If carts data where order_id == newOrderId exists and has more than zero data
-                    if(cartSnapshot.exists() && cartSnapshot.getChildrenCount() > 0) {
-                        for(DataSnapshot dP : cartSnapshot.getChildren()) {
-                            int quantity_di_cart = Integer.parseInt(cartSnapshot.child(dP.getKey()).child("quantity").getValue().toString());
+                    if(snapshot.exists() && snapshot.getChildrenCount() > 0) {
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        // Update isCart to false
+                        childUpdates.put("/" + newOrderId + "/isCart", false);
+                        childUpdates.put("/" + newOrderId + "/status", "pending");
+                        childUpdates.put("/" + newOrderId + "/business_cart", sessionBusinessId + "_false");
+                        mOrders.updateChildren(childUpdates);
 
-                            System.out.println("SNAPSHOT GETKEY  DP DPDP|: " + dP);
-                            mProducts.child(String.valueOf(dP.getKey())).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    System.out.println("SNAPSHOT GETKEY QUANTITY PRODUCTS|: " + snapshot);
-                                int stock_di_products = Integer.parseInt(snapshot.child("stock").getValue().toString());
-                                if(stock_di_products >= quantity_di_cart) {
-                                    Map<String, Object> childUpdates = new HashMap<>();
-//                                // Update isCart to false
-                                childUpdates.put("/" + newOrderId + "/isCart", false);
-                                childUpdates.put("/" + newOrderId + "/status", "pending");
-                                childUpdates.put("/" + newOrderId + "/business_cart", sessionBusinessId + "_false");
-                                mOrders.updateChildren(childUpdates);
+                        Toast.makeText(getActivity().getApplication(), "Your order has been successfully made with order ID " + newOrderId, Toast.LENGTH_SHORT).show();
 
-                                    Map<String, Object> productUpdates = new HashMap<>();
-//                                // Update isCart to false
-                                    productUpdates.put("/" + dP.getKey() + "/stock", Integer.parseInt(snapshot.child("stock").getValue().toString()) - quantity_di_cart);
-                                    mProducts.updateChildren(productUpdates);
-
-                                Toast.makeText(getActivity().getApplication(), "Your order has been successfully made with order ID " + newOrderId, Toast.LENGTH_SHORT).show();
-
-                                startActivity(new Intent(getActivity(), UserActivity.class));
-                                } else {
-                                    Toast.makeText(getActivity().getApplication(), "Your order exceed the stock available.", Toast.LENGTH_SHORT).show();
-                                }
-
-//
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-throw error.toException();
-                                }
-                            });
-                        }
-
-
+                        startActivity(new Intent(getActivity(), UserActivity.class));
                     } else {
                         Toast.makeText(getActivity().getApplication(), "Your cart is empty.", Toast.LENGTH_SHORT).show();
                     }
@@ -234,6 +202,12 @@ throw error.toException();
 
                                             childUpdates.put("/" + orderIdForViewHolder + "/order_datetime", formattedDate);
                                             mOrders.updateChildren(childUpdates);
+
+//                                            Fragment frg = getFragmentManager().findFragmentByTag("user_cart_frag");
+//                                            final FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                                            ft.detach(frg);
+//                                            ft.attach(frg);
+//                                            ft.commit();
                                         }
                                     }
 
@@ -303,20 +277,25 @@ throw error.toException();
 //                                        System.out.println("CART LIST | DDDDD | Product Now: " + snapshot);
                                         if(snapshot.exists()) {
                                             assert productKeyNow != null;
-                                            DataSnapshot productData = snapshot.child(productKeyNow);                                                    holder.product_name.setText(productData.child("product_name").getValue(String.class));
-
-                                            holder.product_key.setText(productData.getKey());
+                                            DataSnapshot productData = snapshot.child(productKeyNow);
+                                                    holder.product_name.setText(productData.child("product_name").getValue(String.class));
 
                                                     // Convert long to currency format
                                                     NumberFormat formatCurrency = new DecimalFormat("#,###");
                                                     holder.product_price.setText("Rp " + formatCurrency.format(productData.child("price").getValue()));
 
+                                                    String quantity = productData.child("quantity").getValue(String.class);
+                                                    if(quantity != null && !quantity.equals("")){
+                                                        holder.cart_qty.setText(productData.child("quantity").getValue(String.class));
+                                                        holder.product_total_price.setText(
+                                                                Integer.parseInt(snapshot.child(productKeyNow).child("price").getValue().toString()) *
+                                                                        Integer.parseInt(holder.cart_qty.getText().toString()));
+
+                                                    } else {
+                                                        holder.cart_qty.setText("1");
                                                         holder.product_total_price.setText(holder.product_price.getText());
-                                            Picasso.get()
-                                                    .load(productData.child("picture_path").getValue().toString())
-                                                    .placeholder(R.mipmap.ic_launcher)
-                                                    .error(R.drawable.basket_white)
-                                                    .into(holder.product_image);
+                                                    }
+
 
                                                 }
                                             }
@@ -346,7 +325,6 @@ throw error.toException();
                         return new UserCartViewholder(view);
                     }
                 };
-                System.out.println("BERHASIL CART");
 
                 recyclerView.setAdapter(adapter);
                 adapter.startListening();
@@ -380,81 +358,52 @@ throw error.toException();
                 Toast.makeText(v.getContext(), "Removed " + product_name.getText().toString() + " from cart.", Toast.LENGTH_SHORT).show();
                 mCarts.child(orderIdForViewHolder).child(product_key.getText().toString()).removeValue();
             });
-//
-//            cart_qty.setTransformationMethod(new NumericKeyBoardTransformationMethod());
-//            cart_qty.setOnKeyListener((v, keyCode, event) -> {
-//                // If the event is a key-down event on the "enter" button
-//                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-//                    cart_qty_helper.setText("0");
-//                    Log.d("PRODUCT KEY CART QTY", "TEST 2");
-//                    String product_key_now = product_key.getText().toString();
-//                    Log.d("PRODUCT KEY CART QTY", product_key_now);
-//
-//                    Map<String, Object> childUpdates = new HashMap<>();
-//                    // Update isCart to false
-//                    childUpdates.put("/" + orderIdForViewHolder + "/" + product_key_now + "/quantity", Integer.parseInt(cart_qty.getText().toString()));
-//                    mCarts.updateChildren(childUpdates);
-//                    return true;
-//                }
-//                return false;
-//            });
 
-//            cart_qty.addTextChangedListener(new TextWatcher() {
-//
-//                public void afterTextChanged(Editable s) {
-//                    Log.d("PRODUCT KEY CART QTY", "TEST");
-//                    Log.d("PRODUCT KEY CART QTY", "Editable s: " + s);
-//
-//                    if(cart_qty_helper.getText().toString().equals("1")) {
-//                        cart_qty_helper.setText("0");
-//                        Log.d("PRODUCT KEY CART QTY", "TEST 2");
-//                        String product_key_now = product_key.getText().toString();
-//                        Log.d("PRODUCT KEY CART QTY", product_key_now);
-//
-//                        Map<String, Object> childUpdates = new HashMap<>();
-//                        // Update isCart to false
-//                        childUpdates.put("/" + orderIdForViewHolder + "/" + product_key_now + "/quantity", Integer.parseInt(cart_qty.getText().toString()));
-//                        mCarts.updateChildren(childUpdates);
-//                    }
-//                }
-//
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-//
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-//            });
+            cart_qty.setOnEditorActionListener((v, actionId, event) -> {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Map<String, Object> childUpdates = new HashMap<>();
 
-//           product_key.addTextChangedListener(new TextWatcher() {
-//
-//                 @Override
-//                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                    if(orderIdForViewHolder.equals(tvOrderId.getText())) {
-//                        String product_key_now = product_key.getText().toString();
-//                        mCarts.child(orderIdForViewHolder).child(product_key_now).addListenerForSingleValueEvent(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                if (snapshot.exists()) {
-//                                    cart_list_user_layout.setVisibility(View.GONE);
-//                                    cart_list_user_layout.setEnabled(false);
-//                                } else {
-//                                    cart_list_user_layout.setVisibility(View.VISIBLE);
-//                                    cart_list_user_layout.setEnabled(true);
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
-//                        });
-//                    }
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {}
-//            });
+                    // Update isCart to false
+                    String product_key_now = product_key.getText().toString();
+                    childUpdates.put("/" + orderIdForViewHolder + "/" + product_key_now + "/quantity", Integer.parseInt(v.getText().toString()));
+                    mCarts.updateChildren(childUpdates);
+                }
+                return handled;
+            });
+
+           product_key.addTextChangedListener(new TextWatcher() {
+
+                 @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if(orderIdForViewHolder.equals(tvOrderId.getText())) {
+                        String product_key_now = product_key.getText().toString();
+                        mCarts.child(orderIdForViewHolder).child(product_key_now).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    cart_list_user_layout.setVisibility(View.GONE);
+                                    cart_list_user_layout.setEnabled(false);
+                                } else {
+                                    cart_list_user_layout.setVisibility(View.VISIBLE);
+                                    cart_list_user_layout.setEnabled(true);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) { throw error.toException(); }
+                        });
+                    }
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
         }
 
 //        private UserCartListViewholder.ClickListener mClickListener;
@@ -480,15 +429,6 @@ throw error.toException();
     public void onStop() {
         super.onStop();
     }
-
-    // Used to make cart_qty input only numbers
-    private static class NumericKeyBoardTransformationMethod extends PasswordTransformationMethod {
-        @Override
-        public CharSequence getTransformation(CharSequence source, View view) {
-            return source;
-        }
-    }
-
     // Used to put space between items in recycler view
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
