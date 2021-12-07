@@ -27,6 +27,7 @@ public class AdminHomeFragment extends Fragment {
     DatabaseReference orderRef, cartRef;
     ArrayList<String> total_customer = new ArrayList<>();
     int quantity = 0;
+    int totalRev = 0;
 
     public AdminHomeFragment() {
         // Required empty public constructor
@@ -88,11 +89,14 @@ public class AdminHomeFragment extends Fragment {
                                 for(DataSnapshot cartSnapshot: orderSnapshot.getChildren()){
                                     System.out.println("cart snapshot test : " + cartSnapshot);
                                     quantity += cartSnapshot.child("quantity").getValue(Integer.class);
+                                    totalRev += cartSnapshot.child("quantity").getValue(Integer.class) *
+                                            cartSnapshot.child("price").getValue(Integer.class);
                                     System.out.println("Quantity Sekarang : " + quantity);
                                 }
                                 System.out.println("Quantity 2 : " + quantity);
                             }
                             tvTotalDish.setText("" + quantity);
+                            tvTotalRevenue.setText("Rp. " + totalRev);
                         }
 
                         @Override
