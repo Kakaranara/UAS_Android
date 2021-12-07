@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,11 +74,38 @@ public class AdminHomeFragment extends Fragment {
             }
         });
 
-        //TODO : bikin total revenue + dish
-        cartRef.orderByChild("business_id").equalTo(session.getBusinessKey()).addValueEventListener(new ValueEventListener() {
+        //TODO : bikin total revenue + quantity products
+        orderRef.orderByChild("business_id").equalTo(session.getBusinessKey()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot data: snapshot.getChildren()) {
+                    String order_key_now = data.getKey();
+                    Log.d("REVENUE DATA", String.valueOf(data));
+                    cartRef.orderByKey().equalTo(order_key_now).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Log.d("REVENUE SNAPSHOT", String.valueOf(snapshot));
+                            for(DataSnapshot data: snapshot.child(order_key_now).getChildren()) {
+                                if(data.exists()) {
+                                    Log.d("REVENUE SNAPSHOT CHILD", String.valueOf(data));
+                                    String product_key_now = snapshot.getKey();
+                                    int price_now = Integer.parseInt(data.child("price").getValue().toString());
+                                    int quantity_now = Integer.parseInt(data.child("quantity").getValue().toString());
 
+                                    int revenue_for_this_product_order = price_now * quantity_now;
+                                    Log.d("REVENUE PRODUCT", "Product key now: " + product_key_now + " has total revenue " + revenue_for_this_product_order);
+                                } else {
+                                    System.out.println("BAPAK KAU");
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
             }
 
             @Override
