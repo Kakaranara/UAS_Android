@@ -26,6 +26,8 @@ AssiStaff merupakan sebuah aplikasi mobile berbasis Android yang ditujukan untuk
 Aplikasi AssiStaff memiliki 3 alur kerja utama, yaitu Login/Register, halaman pelayan, dan halaman kasir. Pada saat aplikasi dimulai, akan ditampilkan sebuah menu yang berisi pilihan login dan register. Jika pengguna sudah memiliki akun, maka dapat menekan tombol login kemudian memasukkan email dan password. Sistem akan melakukan pengecekan ke dalam database user. Jika tidak ditemukan data user yang sesuai maka sistem akan meminta pengguna untuk memasukkan kembali email dan password. Sedangkan jika proses pengecekan berhasil maka akan langsung mengarahkan pengguna sesuai dengan role yang dimiliki (kasir / pelayan). 
 </p>
 
+<p> <b> Notabene : </b> layout optimal ada di tablet PIXEL C </p> 
+
 <h2 align="center">Fitur Aplikasi</h2>
 <p align="center">
   1. Log In<br>
